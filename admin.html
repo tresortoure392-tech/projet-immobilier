@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BouohServices – Administration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="data.js"></script>
+  <style>
+    :root{
+      --rouge:#B83232;--rouge-light:#D94F4F;--rouge-pale:#FCEAEA;
+      --or:#A07820;--or-light:#C09030;--or-pale:#FBF4E3;
+      --dark:#1E1E1E;--mid:#4A4A4A;--light:#7A7A7A;
+      --bg:#F4F1ED;--bg2:#FFFFFF;--bordure:#E8E2DA;
+      --success:#2E7D52;--info:#1565A0;--warning:#B8860B;
+      --sidebar:260px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;}
+
+    /* LOGIN */
+    #loginScreen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1A0505 0%,#2D0D0D 60%,#1A0505 100%);display:flex;align-items:center;justify-content:center;}
+    .login-box{background:#fff;border-radius:20px;padding:3rem 2.5rem;width:100%;max-width:420px;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:fadeUp .6s ease both;}
+    .login-logo{text-align:center;margin-bottom:2rem;}
+    .login-brand{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;}
+    .login-brand .b{color:var(--dark);} .login-brand .r{color:var(--rouge);}
+    .login-script{font-family:'Dancing Script',cursive;color:var(--or);font-size:.95rem;display:block;margin-top:3px;}
+    .login-title{font-size:1rem;font-weight:600;color:var(--mid);text-align:center;margin-bottom:1.8rem;}
+    .lg{margin-bottom:1.1rem;}
+    .lg label{display:block;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:.4rem;}
+    .lg input{width:100%;padding:.82rem 1rem;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;transition:border-color .25s;}
+    .lg input:focus{border-color:var(--rouge);}
+    .login-btn{width:100%;background:var(--rouge);color:#fff;border:none;border-radius:8px;padding:.95rem;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;margin-top:.4rem;}
+    .login-btn:hover{background:var(--rouge-light);box-shadow:0 8px 24px rgba(184,50,50,.3);}
+    .login-err{background:#FEE;border:1px solid #F5BCBC;color:var(--rouge);border-radius:7px;padding:.7rem 1rem;font-size:.85rem;margin-bottom:1rem;display:none;}
+    .login-hint{text-align:center;font-size:.72rem;color:var(--light);margin-top:1rem;}
+
+    /* LAYOUT */
+    #adminApp{display:none;min-height:100vh;}
+    .layout{display:flex;min-height:100vh;}
+
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar);flex-shrink:0;background:linear-gradient(180deg,#1A0505,#2D0D0D 60%,#1A0505);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;}
+    .sb-logo{padding:1.6rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.08);}
+    .sb-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;}
+    .sb-brand .b{color:#fff;} .sb-brand .r{color:var(--rouge);}
+    .sb-script{font-family:'Dancing Script',cursive;font-size:.7rem;color:var(--or-light);display:block;margin-top:2px;}
+    .sb-badge{display:inline-block;background:rgba(184,50,50,.25);border:1px solid rgba(184,50,50,.4);color:var(--rouge-light);font-size:.58rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .6rem;border-radius:4px;margin-top:.5rem;}
+    .sb-nav{flex:1;overflow-y:auto;padding:.5rem 0;}
+    .sb-nav::-webkit-scrollbar{width:3px;}
+    .sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px;}
+    .sec-lbl{padding:1.1rem 1.4rem .4rem;font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25);}
+    .nav-item{display:flex;align-items:center;gap:.8rem;padding:.72rem 1.4rem;margin:.08rem .7rem;border-radius:9px;color:rgba(255,255,255,.5);font-size:.86rem;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;position:relative;}
+    .nav-item i{width:18px;font-size:.93rem;flex-shrink:0;}
+    .nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85);}
+    .nav-item.active{background:var(--rouge);color:#fff;box-shadow:0 4px 14px rgba(184,50,50,.4);}
+    .nb{margin-left:auto;background:rgba(255,255,255,.2);color:#fff;font-size:.63rem;font-weight:700;padding:.12rem .5rem;border-radius:50px;min-width:20px;text-align:center;}
+    .nav-item.active .nb{background:rgba(255,255,255,.25);}
+    .nb.red{background:var(--rouge-light);}
+    .sb-footer{padding:1rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.08) hidden;border-top:1px solid rgba(255,255,255,.08);}
+    .sb-user{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;}
+    .sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--rouge);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;font-weight:700;flex-shrink:0;}
+    .sb-uname{font-size:.82rem;font-weight:600;color:#fff;}
+    .sb-urole{font-size:.67rem;color:rgba(255,255,255,.4);}
+    .logout-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.6rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:rgba(255,255,255,.5);font-size:.8rem;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;}
+    .logout-btn:hover{background:rgba(184,50,50,.2);color:var(--rouge-light);border-color:rgba(184,50,50,.3);}
+
+    /* MAIN */
+    .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:#fff;border-bottom:1px solid var(--bordure);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 8px rgba(0,0,0,.05);}
+    .topbar-l{display:flex;align-items:center;gap:1rem;}
+    .page-title{font-family:'Playfair Display',serif;font-size:1.22rem;font-weight:700;}
+    .topbar-r{display:flex;align-items:center;gap:.8rem;}
+    .tb-btn{width:36px;height:36px;border-radius:8px;background:var(--bg);border:1px solid var(--bordure);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mid);font-size:.88rem;transition:all .2s;position:relative;text-decoration:none;}
+    .tb-btn:hover{background:var(--rouge-pale);color:var(--rouge);border-color:rgba(184,50,50,.25);}
+    .notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--rouge);border-radius:50%;border:1.5px solid #fff;}
+    .topbar-date{font-size:.77rem;color:var(--light);}
+    .hamburger{display:none;width:36px;height:36px;border-radius:8px;background:var(--bg);border:1px solid var(--bordure);align-items:center;justify-content:center;cursor:pointer;color:var(--mid);font-size:1rem;}
+    @media(max-width:900px){.hamburger{display:flex;}.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}}
+    .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;}
+    .sb-overlay.open{display:block;}
+
+    /* CONTENT */
+    .content{padding:2rem;flex:1;}
+    .panel{display:none;} .panel.active{display:block;}
+
+    /* KPIs */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem;}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+    .kpi-card{background:#fff;border-radius:14px;padding:1.4rem;border:1px solid var(--bordure);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+    .kpi-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.08);}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+    .kpi-rouge::before{background:linear-gradient(90deg,var(--rouge),var(--rouge-light));}
+    .kpi-or::before{background:linear-gradient(90deg,var(--or),var(--or-light));}
+    .kpi-success::before{background:linear-gradient(90deg,#2E7D52,#4CAF50);}
+    .kpi-info::before{background:linear-gradient(90deg,#1565A0,#42A5F5);}
+    .kpi-orange::before{background:linear-gradient(90deg,#E65100,#FF9800);}
+    .kpi-ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.9rem;}
+    .kpi-rouge .kpi-ico{background:var(--rouge-pale);color:var(--rouge);}
+    .kpi-or .kpi-ico{background:var(--or-pale);color:var(--or);}
+    .kpi-success .kpi-ico{background:#EBF5EE;color:#2E7D52;}
+    .kpi-info .kpi-ico{background:#E3EEF8;color:#1565A0;}
+    .kpi-orange .kpi-ico{background:#FFF3E0;color:#E65100;}
+    .kpi-val{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;line-height:1;margin-bottom:.25rem;}
+    .kpi-lbl{font-size:.77rem;color:var(--light);font-weight:500;}
+    .kpi-sub{font-size:.7rem;font-weight:600;margin-top:.4rem;color:var(--light);}
+
+    /* CARDS */
+    .card{background:#fff;border:1px solid var(--bordure);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+    .card-hd{padding:1.15rem 1.5rem;border-bottom:1px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;}
+    .card-title{font-family:'Playfair Display',serif;font-size:1.03rem;font-weight:700;}
+    .card-body{padding:1.5rem;}
+
+    /* TABLES */
+    .tbl-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    th{padding:.72rem 1rem;text-align:left;font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--light);background:var(--bg);border-bottom:1px solid var(--bordure);}
+    td{padding:.82rem 1rem;font-size:.86rem;color:var(--mid);border-bottom:1px solid var(--bordure);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(184,50,50,.02);}
+
+    /* BADGES */
+    .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;border-radius:50px;font-size:.69rem;font-weight:700;}
+    .badge::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+    .badge-attente{background:#FFF3E0;color:#E65100;}
+    .badge-confirme{background:#EBF5EE;color:#2E7D52;}
+    .badge-annule{background:#FCEAEA;color:var(--rouge);}
+    .badge-actif{background:#EBF5EE;color:#2E7D52;}
+    .badge-vendu{background:#FCEAEA;color:var(--rouge);}
+    .badge-loue{background:var(--or-pale);color:var(--or);}
+    .badge-pending{background:#E3EEF8;color:#1565A0;}
+    .badge-done{background:#EBF5EE;color:#2E7D52;}
+    .badge-louer{background:var(--or-pale);color:var(--or);}
+    .badge-commander{background:var(--rouge-pale);color:var(--rouge);}
+
+    /* BUTTONS */
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.58rem 1.15rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:600;cursor:pointer;border:none;transition:all .25s;text-decoration:none;}
+    .btn-primary{background:var(--rouge);color:#fff;} .btn-primary:hover{background:var(--rouge-light);box-shadow:0 4px 14px rgba(184,50,50,.3);}
+    .btn-secondary{background:var(--bg);color:var(--mid);border:1px solid var(--bordure);} .btn-secondary:hover{background:var(--rouge-pale);color:var(--rouge);border-color:rgba(184,50,50,.25);}
+    .btn-success{background:#2E7D52;color:#fff;} .btn-success:hover{background:#388E3C;}
+    .btn-warning{background:#F57F17;color:#fff;} .btn-warning:hover{background:#E65100;}
+    .btn-danger{background:#FEE;color:var(--rouge);border:1px solid #F5BCBC;} .btn-danger:hover{background:var(--rouge);color:#fff;}
+    .btn-sm{padding:.32rem .65rem;font-size:.75rem;}
+    .btn-or{background:var(--or);color:#fff;} .btn-or:hover{background:var(--or-light);}
+
+    /* COMMANDE HIGHLIGHT */
+    .cmd-row-new td{background:rgba(230,81,0,.04);}
+
+    /* FORMS */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:700px){.form-grid{grid-template-columns:1fr;}}
+    .fg{margin-bottom:1rem;} .fg.full{grid-column:1/-1;}
+    .fg label{display:block;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:.4rem;}
+    .fg input,.fg select,.fg textarea{width:100%;padding:.78rem .9rem;border:1.5px solid var(--bordure);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.87rem;color:var(--dark);background:var(--bg);outline:none;transition:border-color .25s,background .25s;}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--rouge);background:#fff;}
+    .fg textarea{resize:vertical;min-height:95px;}
+    .form-actions{display:flex;gap:.8rem;margin-top:1.4rem;flex-wrap:wrap;}
+
+    /* UPLOAD */
+    .upload-zone{border:2px dashed var(--bordure);border-radius:12px;padding:2.2rem;text-align:center;cursor:pointer;transition:all .3s;background:var(--bg);position:relative;}
+    .upload-zone:hover,.upload-zone.drag{border-color:var(--rouge);background:var(--rouge-pale);}
+    .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .upload-zone i{font-size:2.3rem;color:var(--rouge);margin-bottom:.6rem;display:block;}
+    .upload-zone p{font-size:.86rem;color:var(--mid);}
+    .upload-zone span{font-size:.76rem;color:var(--light);}
+    .img-prev{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-top:.9rem;}
+    @media(max-width:600px){.img-prev{grid-template-columns:repeat(2,1fr);}}
+    .img-thumb{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--bg);}
+    .img-thumb img{width:100%;height:100%;object-fit:cover;}
+    .img-thumb .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(184,50,50,.9);color:#fff;border:none;border-radius:50%;font-size:.63rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+    /* SEARCH */
+    .search-bar{display:flex;align-items:center;gap:.45rem;background:var(--bg);border:1.5px solid var(--bordure);border-radius:8px;padding:.52rem .85rem;min-width:200px;}
+    .search-bar i{color:var(--light);font-size:.83rem;}
+    .search-bar input{border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:.86rem;color:var(--dark);outline:none;width:100%;}
+
+    /* PILLS */
+    .pills{display:flex;gap:.45rem;flex-wrap:wrap;}
+    .pill{padding:.32rem .85rem;border-radius:50px;font-size:.73rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bordure);background:#fff;color:var(--mid);transition:all .2s;}
+    .pill.active{background:var(--rouge);color:#fff;border-color:var(--rouge);}
+    .pill:hover:not(.active){border-color:var(--rouge);color:var(--rouge);}
+
+    /* MODAL */
+    .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);padding:1rem;}
+    .modal-ov.open{display:flex;}
+    .modal{background:#fff;border-radius:18px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.2);animation:modalIn .3s ease;}
+    @keyframes modalIn{from{opacity:0;transform:scale(.94) translateY(20px)}to{opacity:1;transform:none}}
+    .modal-hd{padding:1.4rem 1.8rem;border-bottom:1px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
+    .modal-hd h3{font-family:'Playfair Display',serif;font-size:1.18rem;font-weight:700;}
+    .modal-close{width:32px;height:32px;border-radius:8px;background:var(--bg);border:none;cursor:pointer;font-size:.88rem;color:var(--mid);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .modal-close:hover{background:var(--rouge-pale);color:var(--rouge);}
+    .modal-bd{padding:1.8rem;}
+
+    /* COMMANDES - FICHE DETAIL */
+    .cmd-detail-header{background:linear-gradient(135deg,var(--rouge),#8B1A1A);border-radius:12px;padding:1.5rem;color:#fff;margin-bottom:1.3rem;display:flex;align-items:center;gap:1rem;}
+    .cmd-detail-ico{width:50px;height:50px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .cmd-detail-ref{font-size:.72rem;opacity:.8;margin-bottom:.2rem;}
+    .cmd-detail-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;}
+    .cmd-detail-prix{font-size:.87rem;opacity:.85;margin-top:.2rem;}
+    .cmd-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;}
+    @media(max-width:480px){.cmd-info-grid{grid-template-columns:1fr;}}
+    .cmd-info-box{background:var(--bg);border-radius:8px;padding:.8rem;}
+    .cmd-info-lbl{font-size:.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:.3rem;}
+    .cmd-info-val{font-size:.9rem;font-weight:600;color:var(--dark);}
+    .cmd-actions-row{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.3rem;}
+
+    /* BIEN GRID (liste) */
+    .bien-grid-admin{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+    @media(max-width:900px){.bien-grid-admin{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:560px){.bien-grid-admin{grid-template-columns:1fr;}}
+    .bien-card-a{background:#fff;border:1px solid var(--bordure);border-radius:13px;overflow:hidden;transition:all .25s;}
+    .bien-card-a:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.09);}
+    .bca-img{width:100%;height:155px;background:linear-gradient(135deg,var(--rouge-pale),var(--or-pale));display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden;}
+    .bca-img img{width:100%;height:100%;object-fit:cover;}
+    .bca-type{position:absolute;top:8px;left:8px;background:var(--rouge);color:#fff;font-size:.65rem;font-weight:700;padding:.22rem .6rem;border-radius:50px;text-transform:uppercase;}
+    .bca-body{padding:1rem;}
+    .bca-name{font-family:'Playfair Display',serif;font-size:.97rem;font-weight:700;margin-bottom:.25rem;}
+    .bca-loc{font-size:.76rem;color:var(--light);margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem;}
+    .bca-price{font-size:1.05rem;font-weight:800;color:var(--rouge);font-family:'Playfair Display',serif;margin-bottom:.7rem;}
+    .bca-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+
+    /* DASHBOARD */
+    .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;}
+    @media(max-width:900px){.dash-grid{grid-template-columns:1fr;}}
+    .activity-feed{display:flex;flex-direction:column;gap:.55rem;}
+    .act-item{display:flex;align-items:flex-start;gap:.85rem;padding:.82rem;border-radius:9px;border:1px solid var(--bordure);background:#fff;transition:all .2s;}
+    .act-item:hover{border-color:rgba(184,50,50,.2);}
+    .act-ico{width:33px;height:33px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.83rem;}
+    .ai-rouge{background:var(--rouge-pale);color:var(--rouge);}
+    .ai-or{background:var(--or-pale);color:var(--or);}
+    .ai-success{background:#EBF5EE;color:#2E7D52;}
+    .ai-info{background:#E3EEF8;color:#1565A0;}
+    .ai-orange{background:#FFF3E0;color:#E65100;}
+    .act-title{font-size:.84rem;font-weight:600;color:var(--dark);}
+    .act-sub{font-size:.74rem;color:var(--light);margin-top:1px;}
+    .act-time{font-size:.69rem;color:var(--light);flex-shrink:0;margin-left:auto;}
+
+    /* PROGRESS */
+    .prog-item{margin-bottom:1rem;}
+    .prog-lbl{display:flex;justify-content:space-between;font-size:.76rem;margin-bottom:.3rem;}
+    .prog-bar{height:7px;background:var(--bg);border-radius:50px;overflow:hidden;}
+    .prog-fill{height:100%;border-radius:50px;transition:width 1s;}
+
+    /* SETTINGS */
+    .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+    @media(max-width:700px){.settings-grid{grid-template-columns:1fr;}}
+
+    /* TOAST */
+    .toast-c{position:fixed;bottom:2rem;right:2rem;z-index:9000;display:flex;flex-direction:column;gap:.5rem;}
+    .toast{background:#1A1A1A;color:#fff;padding:.82rem 1.15rem;border-radius:10px;font-size:.84rem;display:flex;align-items:center;gap:.65rem;min-width:250px;box-shadow:0 6px 24px rgba(0,0,0,.2);animation:toastIn .3s ease;border-left:3px solid #4CAF50;}
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-brand"><span class="b">Bouoh</span><span class="r">Services</span></div>
+      <span class="login-script">Panneau d'Administration</span>
+    </div>
+    <p class="login-title"><i class="fas fa-shield-alt" style="color:var(--rouge);margin-right:6px;"></i>Connexion Administrateur</p>
+    <div class="login-err" id="loginErr"><i class="fas fa-exclamation-circle"></i> Identifiants incorrects.</div>
+    <div class="lg"><label>Identifiant</label><input type="text" id="loginUser" placeholder="admin" autocomplete="username"/></div>
+    <div class="lg"><label>Mot de passe</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Se Connecter</button>
+    <p class="login-hint">Identifiant : <b>admin</b> · Mot de passe : <b>bouoh2026</b></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="adminApp">
+  <div class="sb-overlay" id="sbOverlay" onclick="closeSB()"></div>
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-logo">
+        <div class="sb-brand"><span class="b">Bouoh</span><span class="r">Services</span></div>
+        <span class="sb-script">Votre satisfaction, notre priorité !</span>
+        <span class="sb-badge"><i class="fas fa-cog"></i> Administration</span>
+      </div>
+      <div class="sb-nav">
+        <div class="sec-lbl">Principal</div>
+        <a class="nav-item active" onclick="goTo('dashboard',this)"><i class="fas fa-th-large"></i> Tableau de Bord</a>
+
+        <div class="sec-lbl">Commandes</div>
+        <a class="nav-item" onclick="goTo('commandes',this)"><i class="fas fa-shopping-cart"></i> Commandes Reçues<span class="nb red" id="nbCommandes">0</span></a>
+
+        <div class="sec-lbl">Immobilier</div>
+        <a class="nav-item" onclick="goTo('biens',this)"><i class="fas fa-building"></i> Gestion des Biens<span class="nb" id="nbBiens">0</span></a>
+        <a class="nav-item" onclick="goTo('ajouterBien',this)"><i class="fas fa-plus-circle"></i> Ajouter un Bien</a>
+
+        <div class="sec-lbl">Véhicules</div>
+        <a class="nav-item" onclick="goTo('vehicules',this)"><i class="fas fa-car"></i> Gestion Véhicules<span class="nb" id="nbVehicules">0</span></a>
+        <a class="nav-item" onclick="goTo('ajouterVehicule',this)"><i class="fas fa-car-side"></i> Ajouter un Véhicule</a>
+
+        <div class="sec-lbl">Clients</div>
+        <a class="nav-item" onclick="goTo('visiteurs',this)"><i class="fas fa-users"></i> Visiteurs / Clients<span class="nb" id="nbVisiteurs">0</span></a>
+        <a class="nav-item" onclick="goTo('messages',this)"><i class="fas fa-envelope"></i> Messages<span class="nb" id="nbMessages">0</span></a>
+
+        <div class="sec-lbl">Gestion</div>
+        <a class="nav-item" onclick="goTo('assurances',this)"><i class="fas fa-shield-alt"></i> Assurances</a>
+        <a class="nav-item" onclick="goTo('statistiques',this)"><i class="fas fa-chart-bar"></i> Statistiques</a>
+        <a class="nav-item" onclick="goTo('parametres',this)"><i class="fas fa-cog"></i> Paramètres</a>
+      </div>
+      <div class="sb-footer">
+        <div class="sb-user">
+          <div class="sb-avatar">A</div>
+          <div><div class="sb-uname">Administrateur</div><div class="sb-urole">BouohServices</div></div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-l">
+          <div class="hamburger" onclick="openSB()"><i class="fas fa-bars"></i></div>
+          <div class="page-title" id="pageTitle">Tableau de Bord</div>
+        </div>
+        <div class="topbar-r">
+          <span class="topbar-date" id="todayDate"></span>
+          <a href="index.html" target="_blank" class="tb-btn" title="Voir le site public"><i class="fas fa-external-link-alt"></i></a>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ===== DASHBOARD ===== -->
+        <div class="panel active" id="panel-dashboard">
+          <div class="kpi-grid">
+            <div class="kpi-card kpi-orange"><div class="kpi-ico"><i class="fas fa-shopping-cart"></i></div><div class="kpi-val" id="kpi-cmds">0</div><div class="kpi-lbl">Commandes en attente</div><div class="kpi-sub">À traiter</div></div>
+            <div class="kpi-card kpi-rouge"><div class="kpi-ico"><i class="fas fa-building"></i></div><div class="kpi-val" id="kpi-biens">0</div><div class="kpi-lbl">Biens Immobiliers</div></div>
+            <div class="kpi-card kpi-or"><div class="kpi-ico"><i class="fas fa-car"></i></div><div class="kpi-val" id="kpi-vehicules">0</div><div class="kpi-lbl">Véhicules</div></div>
+            <div class="kpi-card kpi-success"><div class="kpi-ico"><i class="fas fa-users"></i></div><div class="kpi-val" id="kpi-visiteurs">0</div><div class="kpi-lbl">Visiteurs / Clients</div></div>
+          </div>
+
+          <div class="dash-grid">
+            <div>
+              <!-- Commandes récentes -->
+              <div class="card" style="margin-bottom:1.3rem;">
+                <div class="card-hd">
+                  <span class="card-title"><i class="fas fa-shopping-cart" style="color:var(--rouge);margin-right:6px;"></i>Dernières Commandes</span>
+                  <button class="btn btn-primary btn-sm" onclick="goTo('commandes',null)">Voir tout</button>
+                </div>
+                <div class="tbl-wrap">
+                  <table>
+                    <thead><tr><th>Client</th><th>Bien / Véhicule</th><th>Type</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+                    <tbody id="dashCmdTbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--light);">Aucune commande</td></tr></tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Activité -->
+              <div class="card">
+                <div class="card-hd"><span class="card-title"><i class="fas fa-history" style="color:var(--rouge);margin-right:6px;"></i>Activité Récente</span></div>
+                <div class="card-body"><div class="activity-feed" id="actFeed"><div class="act-item"><div class="act-ico ai-rouge"><i class="fas fa-info"></i></div><div><div class="act-title">Bienvenue dans l'administration</div><div class="act-sub">Commencez à ajouter des biens et véhicules</div></div></div></div></div>
+              </div>
+            </div>
+            <div>
+              <div class="card">
+                <div class="card-hd"><span class="card-title"><i class="fas fa-chart-pie" style="color:var(--rouge);margin-right:6px;"></i>Aperçu</span></div>
+                <div class="card-body">
+                  <div class="prog-item"><div class="prog-lbl"><span style="font-size:.75rem;color:var(--light);">Biens disponibles</span><span id="pBiensVal" style="font-size:.75rem;font-weight:700;color:var(--rouge);">0%</span></div><div class="prog-bar"><div class="prog-fill" id="pBiens" style="width:0%;background:var(--rouge);"></div></div></div>
+                  <div class="prog-item"><div class="prog-lbl"><span style="font-size:.75rem;color:var(--light);">Véhicules disponibles</span><span id="pVehVal" style="font-size:.75rem;font-weight:700;color:var(--or);">0%</span></div><div class="prog-bar"><div class="prog-fill" id="pVeh" style="width:0%;background:var(--or);"></div></div></div>
+                  <div class="prog-item"><div class="prog-lbl"><span style="font-size:.75rem;color:var(--light);">Commandes traitées</span><span id="pCmdVal" style="font-size:.75rem;font-weight:700;color:#2E7D52;">0%</span></div><div class="prog-bar"><div class="prog-fill" id="pCmd" style="width:0%;background:#2E7D52;"></div></div></div>
+                  <div style="margin-top:1.4rem;padding-top:1rem;border-top:1px solid var(--bordure);">
+                    <div style="font-size:.71rem;color:var(--light);margin-bottom:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Accès Rapide</div>
+                    <div style="display:flex;flex-direction:column;gap:.5rem;">
+                      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="goTo('commandes',null)"><i class="fas fa-shopping-cart"></i> Voir les Commandes</button>
+                      <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="goTo('ajouterBien',null)"><i class="fas fa-plus"></i> Nouveau Bien</button>
+                      <button class="btn btn-secondary" style="width:100%;justify-content:center;" onclick="goTo('ajouterVehicule',null)"><i class="fas fa-car"></i> Nouveau Véhicule</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== COMMANDES ===== -->
+        <div class="panel" id="panel-commandes">
+          <div class="card">
+            <div class="card-hd">
+              <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <span class="card-title"><i class="fas fa-shopping-cart" style="color:var(--rouge);margin-right:6px;"></i>Commandes Reçues</span>
+                <div class="pills">
+                  <span class="pill active" onclick="filterCmds('tous',this)">Toutes</span>
+                  <span class="pill" onclick="filterCmds('attente',this)">En attente</span>
+                  <span class="pill" onclick="filterCmds('confirme',this)">Confirmées</span>
+                  <span class="pill" onclick="filterCmds('annule',this)">Annulées</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
+                <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Rechercher..." oninput="searchCmds(this.value)"/></div>
+                <button class="btn btn-secondary" onclick="exportCmds()"><i class="fas fa-download"></i> Exporter</button>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Réf.</th>
+                    <th>Client</th>
+                    <th>Téléphone</th>
+                    <th>Bien / Véhicule</th>
+                    <th>Prix</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="cmdsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== BIENS ===== -->
+        <div class="panel" id="panel-biens">
+          <div class="card-hd" style="background:#fff;border-radius:14px 14px 0 0;border:1px solid var(--bordure);border-bottom:none;padding:1.15rem 1.5rem;">
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <span class="card-title">Tous les Biens</span>
+              <div class="pills">
+                <span class="pill active" onclick="filterBiens('tous',this)">Tous</span>
+                <span class="pill" onclick="filterBiens('maison',this)">Maisons</span>
+                <span class="pill" onclick="filterBiens('terrain',this)">Terrains</span>
+                <span class="pill" onclick="filterBiens('appartement',this)">Appartements</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
+              <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Rechercher..." oninput="searchBiens(this.value)"/></div>
+              <button class="btn btn-primary" onclick="goTo('ajouterBien',null)"><i class="fas fa-plus"></i> Ajouter</button>
+            </div>
+          </div>
+          <div style="padding:1.4rem;background:#fff;border:1px solid var(--bordure);border-top:none;border-radius:0 0 14px 14px;">
+            <div class="bien-grid-admin" id="bienGrid"></div>
+          </div>
+        </div>
+
+        <!-- ===== AJOUTER BIEN ===== -->
+        <div class="panel" id="panel-ajouterBien">
+          <div class="card">
+            <div class="card-hd"><span class="card-title"><i class="fas fa-plus-circle" style="color:var(--rouge);margin-right:6px;"></i>Enregistrer un Bien Immobilier</span></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="fg"><label>Titre *</label><input type="text" id="bTitre" placeholder="Ex: Villa F4 avec jardin"/></div>
+                <div class="fg"><label>Type *</label>
+                  <select id="bType"><option value="">Sélectionner...</option><option value="maison">Maison / Villa</option><option value="terrain">Terrain</option><option value="immeuble">Immeuble</option><option value="appartement">Appartement</option><option value="commerce">Local Commercial</option><option value="bureau">Bureau</option></select>
+                </div>
+                <div class="fg"><label>Prix (FCFA) *</label><input type="number" id="bPrix" placeholder="Ex: 45000000"/></div>
+                <div class="fg"><label>Statut *</label>
+                  <select id="bStatut"><option value="actif">Disponible</option><option value="loue">En Location</option><option value="vendu">Vendu</option></select>
+                </div>
+                <div class="fg"><label>Localisation *</label><input type="text" id="bLoc" placeholder="Ex: Katiola, Centre-ville"/></div>
+                <div class="fg"><label>Superficie (m²)</label><input type="number" id="bSuperficie" placeholder="Ex: 250"/></div>
+                <div class="fg"><label>Nombre de pièces</label><input type="number" id="bPieces" placeholder="Ex: 4"/></div>
+                <div class="fg"><label>Référence interne</label><input type="text" id="bRef" placeholder="Ex: BS-IMM-001"/></div>
+                <div class="fg full"><label>Description *</label><textarea id="bDesc" placeholder="Décrivez le bien : état, équipements, situation légale..."></textarea></div>
+              </div>
+              <div style="margin-top:.5rem;">
+                <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:.6rem;">Photos</label>
+                <div class="upload-zone" id="bUploadZone" ondragover="handleDrag(event,'bUploadZone')" ondragleave="handleDragLeave('bUploadZone')" ondrop="handleDrop(event,'bien')">
+                  <input type="file" multiple accept="image/*" onchange="handleFiles(event,'bien')"/>
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Glissez vos photos ici ou <strong style="color:var(--rouge);">cliquez pour parcourir</strong></p>
+                  <span>JPG, PNG, WEBP · Max 5 MB par image</span>
+                </div>
+                <div class="img-prev" id="bImgPrev"></div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveBien()"><i class="fas fa-save"></i> Enregistrer</button>
+                <button class="btn btn-secondary" onclick="resetBien()"><i class="fas fa-undo"></i> Réinitialiser</button>
+                <button class="btn btn-secondary" onclick="goTo('biens',null)"><i class="fas fa-arrow-left"></i> Retour</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== VÉHICULES ===== -->
+        <div class="panel" id="panel-vehicules">
+          <div class="card-hd" style="background:#fff;border-radius:14px 14px 0 0;border:1px solid var(--bordure);border-bottom:none;padding:1.15rem 1.5rem;">
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <span class="card-title">Parc de Véhicules</span>
+              <div class="pills">
+                <span class="pill active" onclick="filterVehicules('tous',this)">Tous</span>
+                <span class="pill" onclick="filterVehicules('vente',this)">À Vendre</span>
+                <span class="pill" onclick="filterVehicules('location',this)">À Louer</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
+              <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Rechercher..." oninput="searchVehicules(this.value)"/></div>
+              <button class="btn btn-primary" onclick="goTo('ajouterVehicule',null)"><i class="fas fa-plus"></i> Ajouter</button>
+            </div>
+          </div>
+          <div style="padding:1.4rem;background:#fff;border:1px solid var(--bordure);border-top:none;border-radius:0 0 14px 14px;">
+            <div class="bien-grid-admin" id="vehiculeGrid"></div>
+          </div>
+        </div>
+
+        <!-- ===== AJOUTER VÉHICULE ===== -->
+        <div class="panel" id="panel-ajouterVehicule">
+          <div class="card">
+            <div class="card-hd"><span class="card-title"><i class="fas fa-car-side" style="color:var(--rouge);margin-right:6px;"></i>Enregistrer un Véhicule</span></div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="fg"><label>Marque *</label><input type="text" id="vMarque" placeholder="Ex: Toyota"/></div>
+                <div class="fg"><label>Modèle *</label><input type="text" id="vModele" placeholder="Ex: Corolla"/></div>
+                <div class="fg"><label>Année *</label><input type="number" id="vAnnee" placeholder="Ex: 2022"/></div>
+                <div class="fg"><label>Type d'offre *</label><select id="vOffre"><option value="vente">Vente</option><option value="location">Location</option><option value="les deux">Vente & Location</option></select></div>
+                <div class="fg"><label>Prix vente (FCFA)</label><input type="number" id="vPrixVente" placeholder="Ex: 8500000"/></div>
+                <div class="fg"><label>Prix location / jour (FCFA)</label><input type="number" id="vPrixLocation" placeholder="Ex: 25000"/></div>
+                <div class="fg"><label>Couleur</label><input type="text" id="vCouleur" placeholder="Ex: Blanc perle"/></div>
+                <div class="fg"><label>Carburant</label><select id="vCarburant"><option>Essence</option><option>Diesel</option><option>Hybride</option><option>Électrique</option></select></div>
+                <div class="fg"><label>Kilométrage</label><input type="number" id="vKm" placeholder="Ex: 45000"/></div>
+                <div class="fg"><label>Statut</label><select id="vStatut"><option value="actif">Disponible</option><option value="loue">En Location</option><option value="vendu">Vendu</option></select></div>
+                <div class="fg full"><label>Description / Équipements</label><textarea id="vDesc" placeholder="Climatisation, GPS, Caméra de recul..."></textarea></div>
+              </div>
+              <div style="margin-top:.5rem;">
+                <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:.6rem;">Photos</label>
+                <div class="upload-zone" id="vUploadZone" ondragover="handleDrag(event,'vUploadZone')" ondragleave="handleDragLeave('vUploadZone')" ondrop="handleDrop(event,'vehicule')">
+                  <input type="file" multiple accept="image/*" onchange="handleFiles(event,'vehicule')"/>
+                  <i class="fas fa-camera"></i>
+                  <p>Glissez vos photos ici ou <strong style="color:var(--rouge);">cliquez pour parcourir</strong></p>
+                  <span>JPG, PNG, WEBP · Max 5 MB par image</span>
+                </div>
+                <div class="img-prev" id="vImgPrev"></div>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" onclick="saveVehicule()"><i class="fas fa-save"></i> Enregistrer</button>
+                <button class="btn btn-secondary" onclick="resetVehicule()"><i class="fas fa-undo"></i> Réinitialiser</button>
+                <button class="btn btn-secondary" onclick="goTo('vehicules',null)"><i class="fas fa-arrow-left"></i> Retour</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== VISITEURS ===== -->
+        <div class="panel" id="panel-visiteurs">
+          <div class="card">
+            <div class="card-hd">
+              <span class="card-title"><i class="fas fa-users" style="color:var(--rouge);margin-right:6px;"></i>Visiteurs / Clients</span>
+              <div style="display:flex;gap:.7rem;flex-wrap:wrap;">
+                <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Rechercher..." oninput="searchVisiteurs(this.value)"/></div>
+                <button class="btn btn-secondary" onclick="exportVisiteurs()"><i class="fas fa-download"></i> CSV</button>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Client</th><th>Téléphone</th><th>Service</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+                <tbody id="visiteursTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== MESSAGES ===== -->
+        <div class="panel" id="panel-messages">
+          <div class="card">
+            <div class="card-hd">
+              <span class="card-title"><i class="fas fa-envelope" style="color:var(--rouge);margin-right:6px;"></i>Messages Reçus</span>
+              <div class="pills">
+                <span class="pill active" onclick="filterMessages('tous',this)">Tous</span>
+                <span class="pill" onclick="filterMessages('pending',this)">Non traités</span>
+                <span class="pill" onclick="filterMessages('done',this)">Traités</span>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Expéditeur</th><th>Téléphone</th><th>Service</th><th>Message</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+                <tbody id="messagesTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ASSURANCES ===== -->
+        <div class="panel" id="panel-assurances">
+          <div class="card">
+            <div class="card-hd"><span class="card-title"><i class="fas fa-shield-alt" style="color:var(--rouge);margin-right:6px;"></i>Contrats d'Assurance</span><button class="btn btn-primary" onclick="openModal('modalAssurance')"><i class="fas fa-plus"></i> Nouveau</button></div>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Client</th><th>Type</th><th>N° Police</th><th>Début</th><th>Échéance</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
+                <tbody id="assurancesTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== STATISTIQUES ===== -->
+        <div class="panel" id="panel-statistiques">
+          <div class="kpi-grid">
+            <div class="kpi-card kpi-orange"><div class="kpi-ico"><i class="fas fa-shopping-cart"></i></div><div class="kpi-val" id="st-cmds-att">0</div><div class="kpi-lbl">Commandes en attente</div></div>
+            <div class="kpi-card kpi-success"><div class="kpi-ico"><i class="fas fa-check-circle"></i></div><div class="kpi-val" id="st-cmds-ok">0</div><div class="kpi-lbl">Commandes confirmées</div></div>
+            <div class="kpi-card kpi-rouge"><div class="kpi-ico"><i class="fas fa-home"></i></div><div class="kpi-val" id="st-biens-actifs">0</div><div class="kpi-lbl">Biens disponibles</div></div>
+            <div class="kpi-card kpi-info"><div class="kpi-ico"><i class="fas fa-user-check"></i></div><div class="kpi-val" id="st-clients">0</div><div class="kpi-lbl">Clients enregistrés</div></div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Répartition des Commandes</span></div>
+            <div class="card-body" id="statCmdChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Répartition des Biens</span></div>
+            <div class="card-body" id="statBienChart"></div>
+          </div>
+        </div>
+
+        <!-- ===== PARAMÈTRES ===== -->
+        <div class="panel" id="panel-parametres">
+          <div class="settings-grid">
+            <div class="card">
+              <div class="card-hd"><span class="card-title"><i class="fas fa-building" style="color:var(--rouge);margin-right:6px;"></i>Infos de l'Agence</span></div>
+              <div class="card-body">
+                <div class="fg"><label>Nom de l'agence</label><input type="text" id="pNom" value="BouohServices"/></div>
+                <div class="fg"><label>Adresse</label><input type="text" id="pAdresse" value="Katiola, feu de la mosquée"/></div>
+                <div class="fg"><label>Quartier / Repère</label><input type="text" id="pQuartier" value="Face au siège PDCI-RDA"/></div>
+                <div class="fg"><label>Ville</label><input type="text" id="pVille" value="Katiola, Côte d'Ivoire"/></div>
+                <div class="fg"><label>Téléphone 1</label><input type="tel" id="pTel1" value="07 68 689 072"/></div>
+                <div class="fg"><label>Téléphone 2</label><input type="tel" id="pTel2" value="01 73 91 92 25"/></div>
+                <div class="fg"><label>WhatsApp (avec indicatif, sans +)</label><input type="tel" id="pWa" value="2250768689072"/></div>
+                <div class="fg"><label>Email</label><input type="email" id="pEmail" placeholder="contact@bouohservices.ci"/></div>
+                <div class="fg"><label>Slogan</label><input type="text" id="pSlogan" value="Votre satisfaction, notre priorité !"/></div>
+                <div class="fg"><label>Horaires</label><input type="text" id="pHoraires" value="Lun – Sam : 8h00 – 18h00 | Dim : Sur rendez-vous"/></div>
+                <button class="btn btn-primary" onclick="saveParams()"><i class="fas fa-save"></i> Sauvegarder et Appliquer sur le site</button>
+              </div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:1.5rem;">
+                <div class="card-hd"><span class="card-title"><i class="fas fa-lock" style="color:var(--rouge);margin-right:6px;"></i>Sécurité</span></div>
+                <div class="card-body">
+                  <div class="fg"><label>Nouveau mot de passe</label><input type="password" id="newPass" placeholder="Nouveau mot de passe"/></div>
+                  <div class="fg"><label>Confirmer</label><input type="password" id="confirmPass" placeholder="Confirmer..."/></div>
+                  <button class="btn btn-primary" onclick="changePassword()"><i class="fas fa-key"></i> Changer</button>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-hd"><span class="card-title"><i class="fas fa-database" style="color:var(--rouge);margin-right:6px;"></i>Données</span></div>
+                <div class="card-body" style="display:flex;flex-direction:column;gap:.7rem;">
+                  <button class="btn btn-secondary" onclick="exportAll()"><i class="fas fa-download"></i> Exporter toutes les données (JSON)</button>
+                  <button class="btn btn-danger" onclick="confirmReset()"><i class="fas fa-trash"></i> Réinitialiser toutes les données</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </main>
+  </div>
+</div>
+
+<!-- ===== MODAL DÉTAIL COMMANDE ===== -->
+<div class="modal-ov" id="modalCmdDetail">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-hd"><h3>Détail de la Commande</h3><button class="modal-close" onclick="closeModal('modalCmdDetail')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-bd" id="modalCmdBody"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL ASSURANCE ===== -->
+<div class="modal-ov" id="modalAssurance">
+  <div class="modal">
+    <div class="modal-hd"><h3>Nouveau Contrat d'Assurance</h3><button class="modal-close" onclick="closeModal('modalAssurance')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-bd">
+      <div class="form-grid">
+        <div class="fg"><label>Nom du Client *</label><input type="text" id="aClient" placeholder="Nom complet"/></div>
+        <div class="fg"><label>Type *</label><select id="aType"><option value="">...</option><option>Assurance Auto</option><option>Assurance Moto</option><option>Assurance Habitation</option></select></div>
+        <div class="fg"><label>N° de Police *</label><input type="text" id="aPolice" placeholder="POL-2026-001"/></div>
+        <div class="fg"><label>Montant (FCFA)</label><input type="number" id="aMontant" placeholder="150000"/></div>
+        <div class="fg"><label>Début</label><input type="date" id="aDebut"/></div>
+        <div class="fg"><label>Échéance</label><input type="date" id="aEcheance"/></div>
+        <div class="fg full"><label>Bien / Véhicule assuré</label><input type="text" id="aBien" placeholder="Ex: Toyota Corolla 2021 – AB 1234 CI"/></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="saveAssurance()"><i class="fas fa-save"></i> Enregistrer</button>
+        <button class="btn btn-secondary" onclick="closeModal('modalAssurance')">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script>
+// ─── AUTH ────────────────────────────────────────────────────────
+let ADMIN_CREDS = { user:'admin', pass:'bouoh2026' };
+let st = {};        // état admin
+let bienImages = []; let vehiculeImages = [];
+let activities = [];
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === ADMIN_CREDS.user && p === ADMIN_CREDS.pass) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    st = BouohData.load();
+    updateDate(); renderAll();
+  } else {
+    const e = document.getElementById('loginErr'); e.style.display = 'block';
+    setTimeout(() => e.style.display = 'none', 3500);
+  }
+}
+function doLogout() {
+  if (confirm('Se déconnecter ?')) { document.getElementById('adminApp').style.display = 'none'; document.getElementById('loginScreen').style.display = 'flex'; document.getElementById('loginUser').value=''; document.getElementById('loginPass').value=''; }
+}
+function updateDate() { document.getElementById('todayDate').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}); }
+
+// ─── NAV ─────────────────────────────────────────────────────────
+const TITLES = { dashboard:'Tableau de Bord', commandes:'Commandes Reçues', biens:'Gestion des Biens', ajouterBien:'Ajouter un Bien', vehicules:'Gestion des Véhicules', ajouterVehicule:'Ajouter un Véhicule', visiteurs:'Visiteurs & Clients', messages:'Messages', assurances:'Assurances', statistiques:'Statistiques', parametres:'Paramètres' };
+function goTo(panel, navEl) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('panel-' + panel);
+  if (el) el.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('pageTitle').textContent = TITLES[panel] || panel;
+  closeSB();
+  if (panel === 'statistiques') refreshStats();
+  if (panel === 'parametres') loadParams();
+}
+function openSB() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sbOverlay').classList.add('open'); }
+function closeSB() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.remove('open'); }
+
+// ─── SYNC ────────────────────────────────────────────────────────
+window.addEventListener('storage', e => { if (e.key === 'bouohservices_data') { st = BouohData.load(); renderAll(); } });
+
+// ─── COMMANDES ───────────────────────────────────────────────────
+function renderCmds(list) {
+  const tb = document.getElementById('cmdsTbody');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:3rem;color:var(--light);"><i class="fas fa-shopping-cart" style="display:block;font-size:2rem;margin-bottom:.8rem;opacity:.15;"></i>Aucune commande reçue</td></tr>'; return; }
+  tb.innerHTML = list.map(c => {
+    const cls = c.statut === 'confirme' ? 'badge-confirme' : c.statut === 'annule' ? 'badge-annule' : 'badge-attente';
+    const txt = c.statut === 'confirme' ? 'Confirmée' : c.statut === 'annule' ? 'Annulée' : 'En attente';
+    const modeCls = c.mode === 'louer' ? 'badge-louer' : 'badge-commander';
+    const modeTxt = c.mode === 'louer' ? 'Location' : 'Achat';
+    const isNew = c.statut === 'attente' ? ' cmd-row-new' : '';
+    return `<tr class="${isNew}">
+      <td><code style="background:var(--bg);padding:.18rem .45rem;border-radius:4px;font-size:.76rem;">${c.ref || '#'+c.id}</code></td>
+      <td><strong>${c.prenom} ${c.nom}</strong></td>
+      <td><a href="tel:${c.tel}" style="color:var(--rouge);font-weight:600;">${c.tel}</a></td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${c.itemNom}">${c.itemNom}</td>
+      <td style="font-weight:700;color:var(--rouge);white-space:nowrap;">${c.itemPrix}</td>
+      <td><span class="badge ${modeCls}">${modeTxt}</span></td>
+      <td style="white-space:nowrap;">${c.dateCmd} ${c.heureCmd || ''}</td>
+      <td><span class="badge ${cls}">${txt}</span></td>
+      <td>
+        <div style="display:flex;gap:.35rem;flex-wrap:wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="viewCmd(${c.id})" title="Voir détail"><i class="fas fa-eye"></i></button>
+          ${c.statut === 'attente' ? `<button class="btn btn-success btn-sm" onclick="updateCmdStatut(${c.id},'confirme')" title="Confirmer"><i class="fas fa-check"></i></button><button class="btn btn-danger btn-sm" onclick="updateCmdStatut(${c.id},'annule')" title="Annuler"><i class="fas fa-times"></i></button>` : ''}
+          <button class="btn btn-danger btn-sm" onclick="deleteCmd(${c.id})" title="Supprimer"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDashCmds() {
+  const tb = document.getElementById('dashCmdTbody');
+  const list = (st.commandes || []).slice(-5).reverse();
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--light);">Aucune commande reçue</td></tr>'; return; }
+  tb.innerHTML = list.map(c => {
+    const cls = c.statut === 'confirme' ? 'badge-confirme' : c.statut === 'annule' ? 'badge-annule' : 'badge-attente';
+    const txt = c.statut === 'confirme' ? 'Confirmée' : c.statut === 'annule' ? 'Annulée' : 'En attente';
+    return `<tr${c.statut==='attente'?' class="cmd-row-new"':''}>
+      <td><strong>${c.prenom} ${c.nom}</strong></td>
+      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.itemNom}</td>
+      <td><span class="badge ${c.mode==='louer'?'badge-louer':'badge-commander'}">${c.mode==='louer'?'Location':'Achat'}</span></td>
+      <td style="white-space:nowrap;">${c.dateCmd}</td>
+      <td><span class="badge ${cls}">${txt}</span></td>
+      <td>${c.statut==='attente'?`<button class="btn btn-success btn-sm" onclick="updateCmdStatut(${c.id},'confirme')"><i class="fas fa-check"></i></button>`:''}</td>
+    </tr>`;
+  }).join('');
+}
+
+function viewCmd(id) {
+  const c = (st.commandes || []).find(x => x.id === id);
+  if (!c) return;
+  const modeTxt = c.mode === 'louer' ? 'Location' : 'Achat / Commande';
+  const statTxt = c.statut === 'confirme' ? 'Confirmée' : c.statut === 'annule' ? 'Annulée' : 'En attente';
+  const statCls = c.statut === 'confirme' ? '#2E7D52' : c.statut === 'annule' ? 'var(--rouge)' : '#E65100';
+  let html = `
+    <div class="cmd-detail-header">
+      <div class="cmd-detail-ico"><i class="fas fa-shopping-cart"></i></div>
+      <div>
+        <div class="cmd-detail-ref">Réf : ${c.ref || '#' + c.id}</div>
+        <div class="cmd-detail-name">${c.itemNom}</div>
+        <div class="cmd-detail-prix">${c.itemPrix} · <span style="background:rgba(255,255,255,.2);padding:.2rem .6rem;border-radius:50px;font-size:.75rem;">${modeTxt}</span></div>
+      </div>
+    </div>
+    <div class="cmd-info-grid">
+      <div class="cmd-info-box"><div class="cmd-info-lbl">Client</div><div class="cmd-info-val">${c.prenom} ${c.nom}</div></div>
+      <div class="cmd-info-box"><div class="cmd-info-lbl">Téléphone</div><div class="cmd-info-val"><a href="tel:${c.tel}" style="color:var(--rouge);">${c.tel}</a></div></div>
+      <div class="cmd-info-box"><div class="cmd-info-lbl">Ville / Quartier</div><div class="cmd-info-val">${c.ville || '—'}</div></div>
+      <div class="cmd-info-box"><div class="cmd-info-lbl">Date commande</div><div class="cmd-info-val">${c.dateCmd} à ${c.heureCmd || '—'}</div></div>
+      ${c.dateDebut ? `<div class="cmd-info-box"><div class="cmd-info-lbl">Date début</div><div class="cmd-info-val">${c.dateDebut}</div></div>` : ''}
+      ${c.dateFin ? `<div class="cmd-info-box"><div class="cmd-info-lbl">Date fin</div><div class="cmd-info-val">${c.dateFin}</div></div>` : ''}
+      <div class="cmd-info-box" style="grid-column:1/-1;"><div class="cmd-info-lbl">Statut</div><div class="cmd-info-val" style="color:${statCls};">● ${statTxt}</div></div>
+    </div>
+    ${c.message ? `<div style="background:var(--bg);border-radius:8px;padding:1rem;font-size:.87rem;color:var(--mid);line-height:1.7;margin-bottom:1.2rem;"><strong>Message du client :</strong><br/>${c.message}</div>` : ''}
+    <div class="cmd-actions-row">
+      <a href="tel:${c.tel}" class="btn btn-secondary" style="flex:1;justify-content:center;"><i class="fas fa-phone-alt"></i> Appeler</a>
+      <a href="https://wa.me/${st.parametres ? st.parametres.whatsapp : ''}?text=${encodeURIComponent('Bonjour '+c.prenom+', concernant votre commande ('+c.ref+') pour '+c.itemNom+' ...')}" target="_blank" class="btn" style="background:#25D366;color:#fff;flex:1;justify-content:center;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      ${c.statut === 'attente' ? `<button class="btn btn-success" style="flex:1;justify-content:center;" onclick="updateCmdStatut(${c.id},'confirme');closeModal('modalCmdDetail')"><i class="fas fa-check"></i> Confirmer</button>` : ''}
+      ${c.statut === 'attente' ? `<button class="btn btn-danger" style="flex:1;justify-content:center;" onclick="updateCmdStatut(${c.id},'annule');closeModal('modalCmdDetail')"><i class="fas fa-times"></i> Annuler</button>` : ''}
+    </div>`;
+  document.getElementById('modalCmdBody').innerHTML = html;
+  openModal('modalCmdDetail');
+}
+
+function updateCmdStatut(id, statut) {
+  st = BouohData.load();
+  const c = (st.commandes || []).find(x => x.id === id);
+  if (c) {
+    c.statut = statut;
+    BouohData.save(st);
+    addActivity('ai-success', 'check', `Commande ${statut} : ${c.prenom} ${c.nom}`, c.itemNom, new Date().toLocaleDateString('fr-FR'));
+    renderAll();
+    showToast(statut === 'confirme' ? 'Commande confirmée !' : 'Commande annulée.', statut === 'confirme' ? 'success' : 'warning');
+  }
+}
+function deleteCmd(id) {
+  if (!confirm('Supprimer cette commande ?')) return;
+  st = BouohData.load();
+  st.commandes = (st.commandes || []).filter(c => c.id !== id);
+  BouohData.save(st); renderAll();
+  showToast('Commande supprimée.', 'warning');
+}
+function filterCmds(type, el) {
+  document.querySelectorAll('#panel-commandes .pill').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  st = BouohData.load();
+  const list = type === 'tous' ? st.commandes || [] : (st.commandes || []).filter(c => c.statut === type);
+  renderCmds(list);
+}
+function searchCmds(q) {
+  const list = (st.commandes || []).filter(c => (c.prenom + c.nom + c.tel + c.itemNom).toLowerCase().includes(q.toLowerCase()));
+  renderCmds(list);
+}
+function exportCmds() {
+  const rows = (st.commandes || []).map(c => `${c.ref};${c.prenom};${c.nom};${c.tel};${c.itemNom};${c.itemPrix};${c.mode};${c.dateCmd};${c.statut}`).join('\n');
+  const blob = new Blob(['Réf;Prénom;Nom;Téléphone;Bien;Prix;Type;Date;Statut\n' + rows], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'commandes_bouoh.csv'; a.click();
+  showToast('Export CSV téléchargé !', 'success');
+}
+
+// ─── BIENS ───────────────────────────────────────────────────────
+function saveBien() {
+  const titre = document.getElementById('bTitre').value.trim();
+  const type = document.getElementById('bType').value;
+  const prix = document.getElementById('bPrix').value;
+  const loc = document.getElementById('bLoc').value.trim();
+  if (!titre || !type || !prix || !loc) { showToast('Remplissez les champs obligatoires (*)', 'error'); return; }
+  st = BouohData.load();
+  const b = { id:Date.now(), titre, type, prix:parseInt(prix), loc, statut:document.getElementById('bStatut').value, desc:document.getElementById('bDesc').value, superficie:document.getElementById('bSuperficie').value, pieces:document.getElementById('bPieces').value, ref:document.getElementById('bRef').value||'BS-'+Date.now(), images:[...bienImages], date:new Date().toLocaleDateString('fr-FR') };
+  st.biens.push(b);
+  bienImages = [];
+  addActivity('ai-rouge','building','Bien ajouté : '+titre, loc, b.date);
+  BouohData.save(st); renderAll(); resetBien();
+  showToast('Bien enregistré avec succès !', 'success');
+  goTo('biens', null);
+}
+function resetBien() {
+  ['bTitre','bType','bPrix','bLoc','bStatut','bDesc','bSuperficie','bPieces','bRef'].forEach(id=>{const el=document.getElementById(id);if(el){if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';}});
+  bienImages=[]; document.getElementById('bImgPrev').innerHTML='';
+}
+function renderBiensAdmin(list) {
+  const g = document.getElementById('bienGrid');
+  if (!list.length) { g.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--light);"><i class="fas fa-building" style="font-size:3rem;opacity:.15;display:block;margin-bottom:1rem;"></i>Aucun bien.<br/><button class="btn btn-primary" style="margin-top:1rem;" onclick="goTo('ajouterBien',null)"><i class="fas fa-plus"></i> Ajouter</button></div>`; return; }
+  g.innerHTML = list.map(b => {
+    const img = b.images&&b.images[0] ? `<img src="${b.images[0]}" alt=""/>` : `<i class="fas fa-building" style="color:rgba(184,50,50,.2);"></i>`;
+    const prix = b.prix ? new Intl.NumberFormat('fr-FR').format(b.prix)+' FCFA' : 'Sur demande';
+    return `<div class="bien-card-a">
+      <div class="bca-img">${img}<span class="bca-type">${b.type}</span></div>
+      <div class="bca-body">
+        <div class="bca-name">${b.titre}</div>
+        <div class="bca-loc"><i class="fas fa-map-marker-alt"></i> ${b.loc}</div>
+        <div class="bca-price">${prix}</div>
+        <div style="margin-bottom:.65rem;"><span class="badge badge-${b.statut}">${b.statut==='actif'?'Disponible':b.statut==='vendu'?'Vendu':'En Location'}</span></div>
+        <div class="bca-actions">
+          <button class="btn btn-danger btn-sm" onclick="deleteBien(${b.id})"><i class="fas fa-trash"></i></button>
+          <button class="btn btn-or btn-sm" onclick="toggleStatutBien(${b.id})"><i class="fas fa-sync-alt"></i> Statut</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterBiens(type, el) { document.querySelectorAll('#panel-biens .pill').forEach(p=>p.classList.remove('active')); if(el)el.classList.add('active'); const list=type==='tous'?st.biens:st.biens.filter(b=>b.type===type); renderBiensAdmin(list); }
+function searchBiens(q) { renderBiensAdmin(st.biens.filter(b=>(b.titre+b.loc+b.type).toLowerCase().includes(q.toLowerCase()))); }
+function deleteBien(id) { if(!confirm('Supprimer ce bien ?'))return; st=BouohData.load(); st.biens=st.biens.filter(b=>b.id!==id); BouohData.save(st); renderAll(); renderBiensAdmin(st.biens); showToast('Bien supprimé.','warning'); }
+function toggleStatutBien(id) {
+  st=BouohData.load(); const b=st.biens.find(x=>x.id===id); if(!b)return;
+  const opts=['actif','loue','vendu']; b.statut=opts[(opts.indexOf(b.statut)+1)%3];
+  BouohData.save(st); renderAll(); renderBiensAdmin(st.biens); showToast('Statut mis à jour : '+b.statut,'success');
+}
+
+// ─── VÉHICULES ───────────────────────────────────────────────────
+function saveVehicule() {
+  const marque=document.getElementById('vMarque').value.trim(); const modele=document.getElementById('vModele').value.trim(); const annee=document.getElementById('vAnnee').value;
+  if(!marque||!modele||!annee){showToast('Remplissez les champs obligatoires (*)','error');return;}
+  st=BouohData.load();
+  const v={id:Date.now(),marque,modele,annee,offre:document.getElementById('vOffre').value,prixVente:document.getElementById('vPrixVente').value,prixLocation:document.getElementById('vPrixLocation').value,couleur:document.getElementById('vCouleur').value,carburant:document.getElementById('vCarburant').value,km:document.getElementById('vKm').value,desc:document.getElementById('vDesc').value,statut:document.getElementById('vStatut').value,images:[...vehiculeImages],date:new Date().toLocaleDateString('fr-FR')};
+  st.vehicules.push(v); vehiculeImages=[];
+  addActivity('ai-or','car','Véhicule ajouté : '+marque+' '+modele,annee+' – '+v.offre,v.date);
+  BouohData.save(st); renderAll(); resetVehicule(); showToast('Véhicule enregistré !','success'); goTo('vehicules',null);
+}
+function resetVehicule() { ['vMarque','vModele','vAnnee','vOffre','vPrixVente','vPrixLocation','vCouleur','vCarburant','vKm','vDesc','vStatut'].forEach(id=>{const el=document.getElementById(id);if(el){if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';}});vehiculeImages=[];document.getElementById('vImgPrev').innerHTML=''; }
+function renderVehiculesAdmin(list) {
+  const g=document.getElementById('vehiculeGrid');
+  if(!list.length){g.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--light);"><i class="fas fa-car" style="font-size:3rem;opacity:.15;display:block;margin-bottom:1rem;"></i>Aucun véhicule.<br/><button class="btn btn-primary" style="margin-top:1rem;" onclick="goTo('ajouterVehicule',null)"><i class="fas fa-plus"></i> Ajouter</button></div>`;return;}
+  g.innerHTML=list.map(v=>{
+    const img=v.images&&v.images[0]?`<img src="${v.images[0]}" alt=""/>` : `<i class="fas fa-car" style="color:rgba(184,50,50,.2);"></i>`;
+    const prix=v.prixVente?new Intl.NumberFormat('fr-FR').format(v.prixVente)+' FCFA':v.prixLocation?new Intl.NumberFormat('fr-FR').format(v.prixLocation)+' FCFA/j':'Sur demande';
+    return `<div class="bien-card-a">
+      <div class="bca-img">${img}<span class="bca-type">${v.offre}</span></div>
+      <div class="bca-body">
+        <div class="bca-name">${v.marque} ${v.modele}</div>
+        <div class="bca-loc"><i class="fas fa-calendar"></i> ${v.annee} · ${v.carburant||''}</div>
+        <div class="bca-price">${prix}</div>
+        <div style="margin-bottom:.65rem;"><span class="badge badge-${v.statut}">${v.statut==='actif'?'Disponible':v.statut==='vendu'?'Vendu':'En Location'}</span></div>
+        <div class="bca-actions">
+          <button class="btn btn-danger btn-sm" onclick="deleteVehicule(${v.id})"><i class="fas fa-trash"></i></button>
+          <button class="btn btn-or btn-sm" onclick="toggleStatutVehicule(${v.id})"><i class="fas fa-sync-alt"></i> Statut</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterVehicules(type,el){document.querySelectorAll('#panel-vehicules .pill').forEach(p=>p.classList.remove('active'));if(el)el.classList.add('active');const list=type==='tous'?st.vehicules:st.vehicules.filter(v=>v.offre.includes(type));renderVehiculesAdmin(list);}
+function searchVehicules(q){renderVehiculesAdmin(st.vehicules.filter(v=>(v.marque+v.modele+v.annee).toLowerCase().includes(q.toLowerCase())));}
+function deleteVehicule(id){if(!confirm('Supprimer ce véhicule ?'))return;st=BouohData.load();st.vehicules=st.vehicules.filter(v=>v.id!==id);BouohData.save(st);renderAll();renderVehiculesAdmin(st.vehicules);showToast('Véhicule supprimé.','warning');}
+function toggleStatutVehicule(id){st=BouohData.load();const v=st.vehicules.find(x=>x.id===id);if(!v)return;const opts=['actif','loue','vendu'];v.statut=opts[(opts.indexOf(v.statut)+1)%3];BouohData.save(st);renderAll();renderVehiculesAdmin(st.vehicules);showToast('Statut mis à jour : '+v.statut,'success');}
+
+// ─── VISITEURS ───────────────────────────────────────────────────
+function renderVisiteurs(list) {
+  const tb=document.getElementById('visiteursTbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2.5rem;color:var(--light);">Aucun visiteur</td></tr>';return;}
+  tb.innerHTML=list.map(v=>`<tr>
+    <td><strong>${v.prenom} ${v.nom}</strong></td>
+    <td><a href="tel:${v.tel}" style="color:var(--rouge);font-weight:600;">${v.tel}</a></td>
+    <td>${v.service||'—'}</td>
+    <td>${v.date}</td>
+    <td><span class="badge badge-${v.statut==='done'?'done':'pending'}">${v.statut==='done'?'Traité':'En attente'}</span></td>
+    <td style="display:flex;gap:.35rem;flex-wrap:wrap;">${v.statut!=='done'?`<button class="btn btn-success btn-sm" onclick="markVDone(${v.id})"><i class="fas fa-check"></i></button>`:''}
+    <button class="btn btn-danger btn-sm" onclick="deleteVisiteur(${v.id})"><i class="fas fa-trash"></i></button></td>
+  </tr>`).join('');
+}
+function searchVisiteurs(q){renderVisiteurs((st.visiteurs||[]).filter(v=>(v.prenom+v.nom+v.tel+v.service).toLowerCase().includes(q.toLowerCase())));}
+function markVDone(id){st=BouohData.load();const v=(st.visiteurs||[]).find(x=>x.id===id);if(v){v.statut='done';BouohData.save(st);renderVisiteurs(st.visiteurs);showToast('Marqué comme traité !','success');}}
+function deleteVisiteur(id){if(!confirm('Supprimer ?'))return;st=BouohData.load();st.visiteurs=(st.visiteurs||[]).filter(v=>v.id!==id);BouohData.save(st);renderAll();renderVisiteurs(st.visiteurs);}
+function exportVisiteurs(){const rows=(st.visiteurs||[]).map(v=>`${v.prenom};${v.nom};${v.tel};${v.service};${v.date}`).join('\n');const blob=new Blob(['Prénom;Nom;Téléphone;Service;Date\n'+rows],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='visiteurs_bouoh.csv';a.click();showToast('Export CSV !','success');}
+
+// ─── MESSAGES ────────────────────────────────────────────────────
+function renderMessages(list) {
+  const tb=document.getElementById('messagesTbody');
+  if(!list.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2.5rem;color:var(--light);">Aucun message</td></tr>';return;}
+  tb.innerHTML=list.map(m=>`<tr>
+    <td><strong>${m.prenom} ${m.nom}</strong></td>
+    <td>${m.tel}</td>
+    <td>${m.service||'—'}</td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.message||'—'}</td>
+    <td>${m.date}</td>
+    <td><span class="badge badge-${m.statut==='done'?'done':'pending'}">${m.statut==='done'?'Traité':'En attente'}</span></td>
+    <td style="display:flex;gap:.35rem;">${m.statut!=='done'?`<button class="btn btn-success btn-sm" onclick="markMDone(${m.id})"><i class="fas fa-check"></i></button>`:''}
+    <button class="btn btn-danger btn-sm" onclick="deleteMsg(${m.id})"><i class="fas fa-trash"></i></button></td>
+  </tr>`).join('');
+}
+function filterMessages(type,el){document.querySelectorAll('#panel-messages .pill').forEach(p=>p.classList.remove('active'));if(el)el.classList.add('active');const list=type==='tous'?(st.messages||[]):type==='done'?(st.messages||[]).filter(m=>m.statut==='done'):(st.messages||[]).filter(m=>m.statut!=='done');renderMessages(list);}
+function markMDone(id){st=BouohData.load();const m=(st.messages||[]).find(x=>x.id===id);if(m){m.statut='done';BouohData.save(st);renderMessages(st.messages);refreshBadges();showToast('Traité !','success');}}
+function deleteMsg(id){if(!confirm('Supprimer ?'))return;st=BouohData.load();st.messages=(st.messages||[]).filter(m=>m.id!==id);BouohData.save(st);renderAll();renderMessages(st.messages);}
+
+// ─── ASSURANCES ──────────────────────────────────────────────────
+function saveAssurance(){
+  const client=document.getElementById('aClient').value.trim(); const type=document.getElementById('aType').value; const police=document.getElementById('aPolice').value.trim();
+  if(!client||!type||!police){showToast('Remplissez les champs obligatoires (*)','error');return;}
+  st=BouohData.load();
+  st.assurances=st.assurances||[];
+  st.assurances.push({id:Date.now(),client,type,police,montant:document.getElementById('aMontant').value,debut:document.getElementById('aDebut').value,echeance:document.getElementById('aEcheance').value,bien:document.getElementById('aBien').value,statut:'actif',date:new Date().toLocaleDateString('fr-FR')});
+  addActivity('ai-info','shield-alt','Contrat assurance : '+client,type,new Date().toLocaleDateString('fr-FR'));
+  BouohData.save(st); renderAssurances(st.assurances); closeModal('modalAssurance'); showToast('Contrat enregistré !','success');
+}
+function renderAssurances(list){
+  const tb=document.getElementById('assurancesTbody');
+  if(!list||!list.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--light);">Aucun contrat</td></tr>';return;}
+  tb.innerHTML=list.map(a=>{const m=a.montant?new Intl.NumberFormat('fr-FR').format(a.montant)+' FCFA':'—';return`<tr><td><strong>${a.client}</strong></td><td>${a.type}</td><td><code style="background:var(--bg);padding:.18rem .45rem;border-radius:4px;">${a.police}</code></td><td>${a.debut||'—'}</td><td>${a.echeance||'—'}</td><td>${m}</td><td><span class="badge badge-actif">Actif</span></td><td><button class="btn btn-danger btn-sm" onclick="deleteAssurance(${a.id})"><i class="fas fa-trash"></i></button></td></tr>`;}).join('');
+}
+function deleteAssurance(id){if(!confirm('Supprimer ce contrat ?'))return;st=BouohData.load();st.assurances=(st.assurances||[]).filter(a=>a.id!==id);BouohData.save(st);renderAssurances(st.assurances);showToast('Contrat supprimé.','warning');}
+
+// ─── STATS ───────────────────────────────────────────────────────
+function refreshStats(){
+  st=BouohData.load();
+  const cmdsAtt=(st.commandes||[]).filter(c=>c.statut==='attente').length;
+  const cmdsOk=(st.commandes||[]).filter(c=>c.statut==='confirme').length;
+  document.getElementById('st-cmds-att').textContent=cmdsAtt;
+  document.getElementById('st-cmds-ok').textContent=cmdsOk;
+  document.getElementById('st-biens-actifs').textContent=st.biens.filter(b=>b.statut==='actif').length;
+  document.getElementById('st-clients').textContent=(st.visiteurs||[]).length;
+  // Cmd chart
+  const cds=document.getElementById('statCmdChart');
+  const total=(st.commandes||[]).length;
+  if(!total){cds.innerHTML='<p style="color:var(--light);text-align:center;padding:2rem;">Aucune commande pour l\'instant.</p>';return;}
+  const att=(st.commandes||[]).filter(c=>c.statut==='attente').length;
+  const ok=(st.commandes||[]).filter(c=>c.statut==='confirme').length;
+  const ann=(st.commandes||[]).filter(c=>c.statut==='annule').length;
+  cds.innerHTML=[['En attente',att,'#E65100'],['Confirmées',ok,'#2E7D52'],['Annulées',ann,'var(--rouge)']].map(([lbl,n,col])=>`<div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem;"><span style="font-weight:600;">${lbl}</span><span style="font-weight:700;color:${col};">${n} / ${total}</span></div><div style="height:8px;background:var(--bg);border-radius:50px;overflow:hidden;"><div style="height:100%;width:${total?Math.round(n/total*100):0}%;background:${col};border-radius:50px;transition:width .8s;"></div></div></div>`).join('');
+  // Bien chart
+  const types={};st.biens.forEach(b=>{types[b.type]=(types[b.type]||0)+1;});
+  const bt=st.biens.length||1;
+  document.getElementById('statBienChart').innerHTML=Object.keys(types).length?Object.entries(types).map(([t,n])=>`<div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem;"><span style="font-weight:600;">${t}</span><span style="font-weight:700;color:var(--rouge);">${n}</span></div><div style="height:8px;background:var(--bg);border-radius:50px;overflow:hidden;"><div style="height:100%;width:${Math.round(n/bt*100)}%;background:linear-gradient(90deg,var(--rouge),var(--or));border-radius:50px;transition:width .8s;"></div></div></div>`).join(''):'<p style="color:var(--light);text-align:center;padding:2rem;">Aucun bien enregistré.</p>';
+}
+
+// ─── PARAMÈTRES ──────────────────────────────────────────────────
+function loadParams(){
+  st=BouohData.load(); const p=st.parametres||{};
+  const m={pNom:'nom',pAdresse:'adresse',pQuartier:'quartier',pVille:'ville',pTel1:'tel1',pTel2:'tel2',pWa:'whatsapp',pEmail:'email',pSlogan:'slogan',pHoraires:'horaires'};
+  Object.entries(m).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.value=p[key]||'';});
+}
+function saveParams(){
+  st=BouohData.load();
+  const m={pNom:'nom',pAdresse:'adresse',pQuartier:'quartier',pVille:'ville',pTel1:'tel1',pTel2:'tel2',pWa:'whatsapp',pEmail:'email',pSlogan:'slogan',pHoraires:'horaires'};
+  Object.entries(m).forEach(([id,key])=>{const el=document.getElementById(id);if(el)st.parametres[key]=el.value;});
+  BouohData.save(st); showToast('Paramètres sauvegardés et appliqués sur le site !','success');
+}
+function changePassword(){
+  const np=document.getElementById('newPass').value; const cp=document.getElementById('confirmPass').value;
+  if(!np||!cp){showToast('Remplissez les deux champs.','error');return;}
+  if(np!==cp){showToast('Les mots de passe ne correspondent pas.','error');return;}
+  if(np.length<6){showToast('Minimum 6 caractères.','error');return;}
+  ADMIN_CREDS.pass=np; showToast('Mot de passe changé !','success');
+  document.getElementById('newPass').value=''; document.getElementById('confirmPass').value='';
+}
+function exportAll(){const blob=new Blob([JSON.stringify(st,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bouoh_data.json';a.click();showToast('Données exportées !','success');}
+function confirmReset(){if(confirm('⚠️ Réinitialiser TOUTES les données ? Cette action est irréversible.')){st=BouohData.reset();activities=[];renderAll();showToast('Données réinitialisées.','warning');}}
+
+// ─── IMAGES ──────────────────────────────────────────────────────
+function handleDrag(e,z){e.preventDefault();document.getElementById(z).classList.add('drag');}
+function handleDragLeave(z){document.getElementById(z).classList.remove('drag');}
+function handleDrop(e,type){e.preventDefault();(type==='bien'?document.getElementById('bUploadZone'):document.getElementById('vUploadZone')).classList.remove('drag');processFiles(Array.from(e.dataTransfer.files),type);}
+function handleFiles(e,type){processFiles(Array.from(e.target.files),type);}
+function processFiles(files,type){files.filter(f=>f.type.startsWith('image/')).forEach(file=>{const r=new FileReader();r.onload=ev=>{const src=ev.target.result;if(type==='bien'){bienImages.push(src);renderPrev('bImgPrev',bienImages,'bien');}else{vehiculeImages.push(src);renderPrev('vImgPrev',vehiculeImages,'vehicule');}};r.readAsDataURL(file);});}
+function renderPrev(cid,imgs,type){document.getElementById(cid).innerHTML=imgs.map((s,i)=>`<div class="img-thumb"><img src="${s}" alt=""/><button class="rm" onclick="removeImg(${i},'${type}')"><i class="fas fa-times"></i></button></div>`).join('');}
+function removeImg(idx,type){if(type==='bien'){bienImages.splice(idx,1);renderPrev('bImgPrev',bienImages,'bien');}else{vehiculeImages.splice(idx,1);renderPrev('vImgPrev',vehiculeImages,'vehicule');}}
+
+// ─── ACTIVITÉ ────────────────────────────────────────────────────
+function addActivity(cls,icon,title,sub,time){activities.unshift({cls,icon,title,sub,time});if(activities.length>10)activities.pop();renderActivity();}
+function renderActivity(){const c=document.getElementById('actFeed');if(!activities.length){c.innerHTML='<div class="act-item"><div class="act-ico ai-rouge"><i class="fas fa-info"></i></div><div><div class="act-title">Bienvenue dans l\'administration</div><div class="act-sub">Commencez à ajouter des biens et véhicules</div></div></div>';return;}c.innerHTML=activities.map(a=>`<div class="act-item"><div class="act-ico ${a.cls}"><i class="fas fa-${a.icon}"></i></div><div style="flex:1;"><div class="act-title">${a.title}</div><div class="act-sub">${a.sub}</div></div><div class="act-time">${a.time}</div></div>`).join('');}
+
+// ─── BADGES & KPIs ───────────────────────────────────────────────
+function refreshBadges(){
+  const cmdsAtt=(st.commandes||[]).filter(c=>c.statut==='attente').length;
+  document.getElementById('nbCommandes').textContent=cmdsAtt;
+  document.getElementById('nbBiens').textContent=st.biens.length;
+  document.getElementById('nbVehicules').textContent=st.vehicules.length;
+  document.getElementById('nbVisiteurs').textContent=(st.visiteurs||[]).length;
+  const msgPending=(st.messages||[]).filter(m=>m.statut!=='done').length;
+  document.getElementById('nbMessages').textContent=msgPending;
+  document.getElementById('kpi-cmds').textContent=cmdsAtt;
+  document.getElementById('kpi-biens').textContent=st.biens.length;
+  document.getElementById('kpi-vehicules').textContent=st.vehicules.length;
+  document.getElementById('kpi-visiteurs').textContent=(st.visiteurs||[]).length;
+  // Progress bars
+  const bt=st.biens.length||1; const ba=st.biens.filter(b=>b.statut==='actif').length; const pB=Math.round(ba/bt*100);
+  document.getElementById('pBiens').style.width=pB+'%'; document.getElementById('pBiensVal').textContent=pB+'%';
+  const vt=st.vehicules.length||1; const va=st.vehicules.filter(v=>v.statut==='actif').length; const pV=Math.round(va/vt*100);
+  document.getElementById('pVeh').style.width=pV+'%'; document.getElementById('pVehVal').textContent=pV+'%';
+  const ct=(st.commandes||[]).length||1; const cok=(st.commandes||[]).filter(c=>c.statut==='confirme').length; const pC=Math.round(cok/ct*100);
+  document.getElementById('pCmd').style.width=pC+'%'; document.getElementById('pCmdVal').textContent=pC+'%';
+}
+
+// ─── RENDER ALL ──────────────────────────────────────────────────
+function renderAll(){
+  st=BouohData.load();
+  refreshBadges();
+  renderCmds(st.commandes||[]);
+  renderDashCmds();
+  renderBiensAdmin(st.biens);
+  renderVehiculesAdmin(st.vehicules);
+  renderVisiteurs(st.visiteurs||[]);
+  renderMessages(st.messages||[]);
+  renderAssurances(st.assurances||[]);
+  renderActivity();
+}
+
+// ─── MODALS ──────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
+
+// ─── TOAST ───────────────────────────────────────────────────────
+function showToast(msg,type='success'){
+  const c=document.getElementById('toastC'); const t=document.createElement('div'); t.className='toast';
+  const col=type==='success'?'#4CAF50':type==='warning'?'var(--or)':'var(--rouge)';
+  const ico=type==='success'?'check-circle':type==='warning'?'exclamation-triangle':'times-circle';
+  t.style.borderLeftColor=col; t.innerHTML=`<i class="fas fa-${ico}" style="color:${col}"></i> ${msg}`;
+  c.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400);},3500);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+// Pré-charger activités depuis les données existantes
+function initActivities(){
+  st=BouohData.load();
+  if(st.biens.length) addActivity('ai-rouge','building','Biens chargés',st.biens.length+' bien(s) en base',new Date().toLocaleDateString('fr-FR'));
+  if((st.commandes||[]).length){const att=(st.commandes||[]).filter(c=>c.statut==='attente').length;if(att>0)addActivity('ai-orange','shopping-cart',att+' commande(s) en attente','À traiter',new Date().toLocaleDateString('fr-FR'));}
+}
+// Check nouvelles commandes (poll toutes les 30s)
+setInterval(()=>{const fresh=BouohData.load();const att=(fresh.commandes||[]).filter(c=>c.statut==='attente').length;const cur=parseInt(document.getElementById('nbCommandes').textContent)||0;if(att>cur){st=fresh;renderAll();showToast(att+' commande(s) en attente !','warning');}},30000);
+
+updateDate();
+// Pas de doLogin automatique — attendre connexion
+</script>
+</body>
+</html>

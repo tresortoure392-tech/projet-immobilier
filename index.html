@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BouohSERVICES – Assurance & Immobilier | Katiola</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="data.js"></script>
+  <style>
+    :root{--rouge:#B83232;--rouge-light:#D94F4F;--rouge-pale:#FCEAEA;--or:#A07820;--or-light:#C09030;--or-pale:#FBF4E3;--dark-text:#1E1E1E;--mid-text:#4A4A4A;--light-text:#7A7A7A;--bg:#FFFFFF;--bg2:#F8F6F3;--bg3:#F2EEE9;--bordure:#E8E2DA;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--dark-text);overflow-x:hidden;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:.9rem 5%;background:rgba(255,255,255,.98);backdrop-filter:blur(12px);border-bottom:2px solid var(--rouge);box-shadow:0 2px 20px rgba(0,0,0,.07);transition:padding .3s;}
+    .logo-nav{line-height:1.1;}
+    .logo-text{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:900;}
+    .logo-text .b{color:var(--dark-text);} .logo-text .r{color:var(--rouge);}
+    .logo-script{font-family:'Dancing Script',cursive;font-size:.72rem;color:var(--or);display:block;margin-top:1px;}
+    .nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+    .nav-links a{color:var(--mid-text);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s;position:relative;}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--rouge);transition:width .3s;}
+    .nav-links a:hover{color:var(--rouge);} .nav-links a:hover::after{width:100%;}
+    .nav-cta{background:var(--rouge)!important;color:#fff!important;padding:.5rem 1.3rem;border-radius:5px;font-weight:600!important;}
+    .nav-cta::after{display:none!important;} .nav-cta:hover{background:var(--rouge-light)!important;}
+    .menu-toggle{display:none;font-size:1.4rem;cursor:pointer;color:var(--rouge);}
+    @media(max-width:768px){
+      .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;gap:0;padding:1rem 0;border-bottom:2px solid var(--rouge);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+      .nav-links.open{display:flex;} .nav-links li{width:100%;text-align:center;padding:.7rem 2rem;}
+      .menu-toggle{display:block;}
+    }
+
+    /* HERO */
+    #hero{min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#fff 0%,#FBF7F2 50%,#F5EFE6 100%);position:relative;overflow:hidden;}
+    .hero-deco{position:absolute;border-radius:50%;}
+    .hero-deco.c1{width:600px;height:600px;top:-150px;right:-100px;background:radial-gradient(circle,rgba(184,50,50,.07) 0%,transparent 70%);}
+    .hero-deco.c2{width:400px;height:400px;bottom:-100px;left:-80px;background:radial-gradient(circle,rgba(160,120,32,.06) 0%,transparent 70%);}
+    .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;padding:8rem 5% 5rem;width:100%;}
+    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--rouge-pale);border:1px solid rgba(184,50,50,.25);color:var(--rouge);padding:.4rem 1rem;border-radius:50px;font-size:.73rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1.4rem;}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);font-weight:900;line-height:1.1;margin-bottom:.5rem;}
+    .hero-title .rouge{color:var(--rouge);}
+    .hero-tagline{font-family:'Dancing Script',cursive;font-size:1.4rem;color:var(--or);margin-bottom:1.3rem;}
+    .hero-desc{font-size:.97rem;color:var(--mid-text);line-height:1.75;max-width:460px;margin-bottom:2rem;}
+    .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+    .btn-rouge{background:var(--rouge);color:#fff;padding:.85rem 1.8rem;border-radius:7px;font-weight:700;font-size:.92rem;text-decoration:none;border:2px solid var(--rouge);display:inline-flex;align-items:center;gap:.5rem;transition:all .3s;}
+    .btn-rouge:hover{background:var(--rouge-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,50,50,.2);}
+    .btn-outline{background:transparent;color:var(--rouge);padding:.85rem 1.8rem;border-radius:7px;font-weight:600;font-size:.92rem;text-decoration:none;border:2px solid var(--rouge);display:inline-flex;align-items:center;gap:.5rem;transition:all .3s;}
+    .btn-outline:hover{background:var(--rouge-pale);transform:translateY(-2px);}
+    .hero-phones{margin-top:2rem;display:flex;flex-direction:column;gap:.5rem;}
+    .hero-phone{display:flex;align-items:center;gap:.7rem;font-size:1.05rem;font-weight:700;color:var(--dark-text);text-decoration:none;transition:color .2s;}
+    .hero-phone i{color:var(--rouge);} .hero-phone:hover{color:var(--rouge);}
+    .hero-visual{background:linear-gradient(135deg,var(--rouge-pale),var(--or-pale));border-radius:18px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.12);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;}
+    .hero-visual img{width:100%;height:100%;object-fit:cover;}
+    .trust-badge{position:absolute;top:-14px;right:-14px;width:80px;height:80px;background:var(--rouge);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;font-size:.52rem;font-weight:700;line-height:1.3;box-shadow:0 6px 20px rgba(184,50,50,.35);animation:spin-slow 14s linear infinite;}
+    .trust-badge i{font-size:1rem;margin-bottom:2px;}
+    @media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:2rem;padding:7rem 5% 3rem;} .hero-right{display:none;}}
+
+    /* STATS BAR */
+    .stats-bar{background:var(--rouge);padding:1rem 5%;}
+    .stats-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:.8rem;}
+    .stat-item{display:flex;align-items:center;gap:.7rem;color:#fff;}
+    .stat-item i{font-size:1.3rem;opacity:.8;}
+    .stat-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;line-height:1;}
+    .stat-lbl{font-size:.7rem;opacity:.85;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+    .stat-sep{width:1px;height:36px;background:rgba(255,255,255,.25);}
+
+    /* SECTIONS */
+    .sw{padding:5.5rem 5%;} .sw.alt{background:var(--bg2);} .sw.alt2{background:var(--bg3);}
+    .si{max-width:1200px;margin:0 auto;}
+    .s-tag{display:inline-block;color:var(--rouge);font-size:.72rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:.6rem;}
+    .s-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;line-height:1.15;}
+    .s-div{width:48px;height:3px;background:linear-gradient(90deg,var(--rouge),var(--or));margin:.9rem 0 1.3rem;border-radius:2px;}
+    .s-sub{color:var(--mid-text);font-size:.93rem;line-height:1.75;max-width:500px;}
+
+    /* SERVICES */
+    .srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.8rem;}
+    @media(max-width:900px){.srv-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:580px){.srv-grid{grid-template-columns:1fr;}}
+    .srv-card{background:#fff;border:1px solid var(--bordure);border-radius:14px;padding:1.8rem 1.6rem;position:relative;overflow:hidden;transition:all .3s;}
+    .srv-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rouge),var(--or));transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+    .srv-card:hover{border-color:rgba(184,50,50,.2);transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.1);}
+    .srv-card:hover::after{transform:scaleX(1);}
+    .srv-ico{width:54px;height:54px;border-radius:12px;background:var(--rouge-pale);display:flex;align-items:center;justify-content:center;font-size:1.45rem;color:var(--rouge);margin-bottom:1.2rem;transition:all .3s;}
+    .srv-card:hover .srv-ico{background:var(--rouge);color:#fff;}
+    .srv-t{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:.55rem;}
+    .srv-d{font-size:.84rem;color:var(--light-text);line-height:1.7;margin-bottom:1.2rem;}
+    .srv-lnk{color:var(--or);font-size:.8rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;transition:gap .2s;}
+    .srv-lnk:hover{gap:.7rem;}
+
+    /* BIEN CARDS */
+    .bien-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem;}
+    @media(max-width:900px){.bien-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:560px){.bien-grid{grid-template-columns:1fr;}}
+    .bien-card{background:#fff;border:1px solid var(--bordure);border-radius:14px;overflow:hidden;transition:all .3s;display:flex;flex-direction:column;}
+    .bien-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.1);}
+    .bien-img{width:100%;height:185px;background:linear-gradient(135deg,var(--rouge-pale),var(--or-pale));display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;flex-shrink:0;overflow:hidden;}
+    .bien-img img{width:100%;height:100%;object-fit:cover;}
+    .bien-badge{position:absolute;top:10px;left:10px;font-size:.68rem;font-weight:700;padding:.25rem .7rem;border-radius:50px;letter-spacing:.5px;text-transform:uppercase;}
+    .badge-actif{background:var(--rouge);color:#fff;}
+    .badge-loue{background:var(--or);color:#fff;}
+    .badge-vendu{background:#555;color:#fff;}
+    .bien-body{padding:1.2rem 1.2rem 1rem;flex:1;display:flex;flex-direction:column;}
+    .bien-type-tag{font-size:.68rem;color:var(--rouge);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:.3rem;}
+    .bien-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;}
+    .bien-loc{font-size:.78rem;color:var(--light-text);margin-bottom:.45rem;display:flex;align-items:center;gap:.3rem;}
+    .bien-meta{display:flex;gap:.6rem;font-size:.75rem;color:var(--light-text);margin-bottom:.5rem;flex-wrap:wrap;}
+    .bien-price{font-size:1.15rem;font-weight:800;color:var(--rouge);font-family:'Playfair Display',serif;margin-top:auto;padding-top:.4rem;margin-bottom:.9rem;}
+
+    /* ===== BOUTONS ACTIONS BIEN ===== */
+    .bien-actions{display:flex;gap:.5rem;margin-top:auto;}
+    .btn-detail{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem .5rem;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bordure);background:#fff;color:var(--mid-text);text-decoration:none;transition:all .25s;}
+    .btn-detail:hover{border-color:var(--rouge);color:var(--rouge);background:var(--rouge-pale);}
+    .btn-commander{flex:1.4;display:flex;align-items:center;justify-content:center;gap:.45rem;padding:.6rem .5rem;border-radius:7px;font-size:.82rem;font-weight:700;cursor:pointer;border:none;color:#fff;background:linear-gradient(135deg,var(--rouge),var(--rouge-light));box-shadow:0 3px 12px rgba(184,50,50,.25);transition:all .25s;position:relative;overflow:hidden;}
+    .btn-commander::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .2s;}
+    .btn-commander:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(184,50,50,.35);}
+    .btn-commander:hover::after{background:rgba(255,255,255,.08);}
+    .btn-louer{background:linear-gradient(135deg,var(--or),var(--or-light));box-shadow:0 3px 12px rgba(160,120,32,.25);}
+    .btn-louer:hover{box-shadow:0 6px 20px rgba(160,120,32,.35);}
+    .btn-vendu-dis{flex:1.4;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem;border-radius:7px;font-size:.8rem;font-weight:600;border:1px solid var(--bordure);background:var(--bg2);color:var(--light-text);cursor:not-allowed;}
+
+    .empty-state{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--light-text);}
+    .empty-state i{font-size:3.5rem;opacity:.15;display:block;margin-bottom:1rem;}
+
+    /* VALEURS */
+    .val-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:2.8rem;}
+    @media(max-width:900px){.val-grid{grid-template-columns:repeat(2,1fr);}}
+    .val-card{background:#fff;border:1px solid var(--bordure);border-radius:13px;padding:1.8rem 1.4rem;text-align:center;transition:all .3s;}
+    .val-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.09);border-color:rgba(184,50,50,.2);}
+    .val-ico{font-size:2rem;color:var(--rouge);margin-bottom:.9rem;}
+    .val-t{font-weight:700;font-size:.93rem;margin-bottom:.4rem;}
+    .val-d{font-size:.8rem;color:var(--light-text);line-height:1.6;}
+
+    /* PARTENAIRES */
+    .part-grid{display:flex;align-items:center;justify-content:center;gap:1.3rem;flex-wrap:wrap;margin-top:1.3rem;}
+    .part-badge{background:#fff;border:1px solid var(--bordure);border-radius:10px;padding:.95rem 1.6rem;font-weight:800;font-size:.9rem;transition:all .3s;text-decoration:none;display:inline-block;}
+    .part-badge:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.1);border-color:var(--or);}
+    .p-tp{color:var(--rouge);} .p-wu{color:#B8860B;} .p-lw{color:#C06820;} .p-ria{color:#9C2070;}
+
+    /* LOCALISATION */
+    .loc-wrap{background:linear-gradient(135deg,var(--rouge) 0%,#8B1A1A 100%);border-radius:18px;padding:3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2.8rem;overflow:hidden;color:#fff;}
+    @media(max-width:700px){.loc-wrap{grid-template-columns:1fr;gap:1.5rem;padding:2rem;}}
+    .loc-title{font-family:'Playfair Display',serif;font-size:2.3rem;font-weight:900;margin-bottom:.4rem;}
+    .loc-addr{display:flex;align-items:flex-start;gap:.8rem;background:rgba(255,255,255,.12);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.3rem;backdrop-filter:blur(4px);}
+    .loc-addr p{font-size:.92rem;line-height:1.6;opacity:.95;}
+    .loc-phones{display:flex;flex-direction:column;gap:.6rem;}
+    .loc-ph{display:flex;align-items:center;gap:.7rem;font-size:1.1rem;font-weight:700;text-decoration:none;color:#fff;transition:opacity .2s;}
+    .loc-ph:hover{opacity:.8;}
+    .loc-ph .ph-ic{background:rgba(255,255,255,.15);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .loc-card{background:rgba(255,255,255,.12);border-radius:14px;padding:2.2rem;text-align:center;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);}
+    .katiola-pin{display:inline-block;background:#F5C800;color:#1E1E1E;font-weight:900;font-size:1rem;padding:.4rem 1.3rem;border-radius:50px;}
+
+    /* CONTACT */
+    .contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:3.5rem;margin-top:2.8rem;}
+    @media(max-width:800px){.contact-grid{grid-template-columns:1fr;}}
+    .ci-item{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem;border-radius:11px;border:1px solid var(--bordure);background:#fff;transition:all .3s;margin-bottom:.8rem;}
+    .ci-item:hover{border-color:rgba(184,50,50,.25);box-shadow:0 6px 18px rgba(0,0,0,.07);}
+    .ci-ico{width:42px;height:42px;border-radius:9px;background:var(--rouge-pale);color:var(--rouge);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .ci-lbl{font-size:.73rem;color:var(--light-text);margin-bottom:.25rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+    .ci-val{font-size:.92rem;font-weight:600;} .ci-val a{color:var(--dark-text);text-decoration:none;} .ci-val a:hover{color:var(--rouge);}
+    .contact-form{background:#fff;border:1px solid var(--bordure);border-radius:16px;padding:2.3rem;box-shadow:0 8px 30px rgba(0,0,0,.06);}
+    .form-title{font-family:'Playfair Display',serif;font-size:1.35rem;margin-bottom:1.6rem;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:500px){.form-row{grid-template-columns:1fr;}}
+    .form-group{margin-bottom:1rem;}
+    .form-group label{display:block;font-size:.76rem;color:var(--light-text);margin-bottom:.45rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+    .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg2);border:1px solid var(--bordure);border-radius:7px;padding:.8rem .9rem;color:var(--dark-text);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;transition:border-color .25s;}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--rouge);background:#fff;}
+    .form-group textarea{resize:vertical;min-height:95px;}
+    .btn-submit{width:100%;background:var(--rouge);color:#fff;padding:.95rem;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.93rem;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+    .btn-submit:hover{background:var(--rouge-light);box-shadow:0 6px 20px rgba(184,50,50,.25);}
+
+    /* FOOTER */
+    footer{background:#1A1A1A;color:rgba(255,255,255,.75);padding:3rem 5% 1.5rem;}
+    .footer-top{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,.1);}
+    @media(max-width:800px){.footer-top{grid-template-columns:1fr 1fr;} .footer-top>div:first-child{grid-column:1/-1;}}
+    @media(max-width:500px){.footer-top{grid-template-columns:1fr;}}
+    .foot-logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;display:block;margin-bottom:.4rem;}
+    .foot-logo .b{color:#fff;} .foot-logo .r{color:var(--rouge);}
+    .foot-script{font-family:'Dancing Script',cursive;font-size:.88rem;color:var(--or-light);display:block;margin-bottom:.9rem;}
+    .foot-about{font-size:.82rem;line-height:1.7;max-width:230px;opacity:.7;}
+    .foot-socials{display:flex;gap:.6rem;margin-top:1.2rem;}
+    .soc-ico{width:34px;height:34px;border-radius:7px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:.85rem;text-decoration:none;transition:all .3s;}
+    .soc-ico:hover{background:var(--rouge);color:#fff;}
+    .foot-col h5{font-size:.76rem;font-weight:700;color:var(--rouge);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1.1rem;}
+    .foot-col ul{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+    .foot-col ul a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.82rem;transition:color .2s;}
+    .foot-col ul a:hover{color:#fff;}
+    .foot-bottom{max-width:1200px;margin:1.3rem auto 0;text-align:center;font-size:.76rem;opacity:.5;}
+
+    /* WA */
+    .wa-btn{position:fixed;bottom:1.8rem;right:1.8rem;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;text-decoration:none;z-index:999;box-shadow:0 5px 20px rgba(37,211,102,.4);transition:transform .3s;}
+    .wa-btn:hover{transform:scale(1.1);}
+    .wa-pulse{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(37,211,102,.35);animation:pulse 2s ease-out infinite;}
+    .admin-link{position:fixed;bottom:1.8rem;left:1.8rem;width:44px;height:44px;background:rgba(0,0,0,.55);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-size:.85rem;text-decoration:none;z-index:999;transition:all .3s;backdrop-filter:blur(4px);}
+    .admin-link:hover{background:var(--rouge);color:#fff;}
+
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:1rem;}
+    .modal-overlay.open{display:flex;}
+    .modal-box{background:#fff;border-radius:18px;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.2);animation:modalIn .3s ease;}
+    @keyframes modalIn{from{opacity:0;transform:scale(.94) translateY(20px)}to{opacity:1;transform:none}}
+    .modal-hd{padding:1.4rem 1.8rem;border-bottom:1px solid var(--bordure);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
+    .modal-hd h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;}
+    .modal-close{width:32px;height:32px;border-radius:8px;background:var(--bg2);border:none;cursor:pointer;font-size:.9rem;color:var(--mid-text);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .modal-close:hover{background:var(--rouge-pale);color:var(--rouge);}
+    .modal-bd{padding:1.8rem;}
+    .modal-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.5rem;}
+    .modal-imgs img{width:100%;border-radius:8px;aspect-ratio:4/3;object-fit:cover;}
+    .modal-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;}
+    @media(max-width:500px){.modal-info-grid{grid-template-columns:1fr;}}
+    .info-box{background:var(--bg2);border-radius:8px;padding:.8rem;}
+    .info-box .lbl{font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light-text);margin-bottom:.3rem;}
+    .info-box .val{font-size:.9rem;font-weight:600;}
+    .modal-desc{background:var(--bg2);border-radius:8px;padding:1rem;font-size:.88rem;color:var(--mid-text);line-height:1.75;margin-bottom:1.2rem;}
+    .modal-cta-row{display:flex;gap:.8rem;flex-wrap:wrap;}
+    .modal-cta-row a,.modal-cta-row button{flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1rem;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .3s;border:none;}
+    .cta-wa{background:#25D366;color:#fff;}
+    .cta-wa:hover{background:#1EBF5A;}
+    .cta-cmd{background:var(--rouge);color:#fff;}
+    .cta-cmd:hover{background:var(--rouge-light);}
+    .cta-louer{background:var(--or);color:#fff;}
+    .cta-louer:hover{background:var(--or-light);}
+
+    /* ===== MODAL COMMANDE ===== */
+    .modal-box.cmd-box{max-width:560px;}
+    .cmd-header{background:linear-gradient(135deg,var(--rouge),var(--rouge-light));padding:2rem 1.8rem;color:#fff;border-radius:18px 18px 0 0;position:relative;}
+    .cmd-header-icon{width:52px;height:52px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:.9rem;}
+    .cmd-header h3{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:.3rem;}
+    .cmd-header p{font-size:.83rem;opacity:.9;}
+    .cmd-bien-recap{background:rgba(255,255,255,.15);border-radius:10px;padding:.9rem 1.1rem;margin-top:1rem;display:flex;align-items:center;gap:.9rem;backdrop-filter:blur(4px);}
+    .cmd-bien-recap .recap-ico{width:40px;height:40px;border-radius:9px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .cmd-bien-recap .recap-name{font-weight:700;font-size:.93rem;}
+    .cmd-bien-recap .recap-prix{font-size:.8rem;opacity:.85;margin-top:2px;}
+    .cmd-body{padding:1.8rem;}
+    .cmd-form-group{margin-bottom:1.1rem;}
+    .cmd-form-group label{display:block;font-size:.73rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light-text);margin-bottom:.45rem;}
+    .cmd-form-group input,.cmd-form-group select,.cmd-form-group textarea{width:100%;background:var(--bg2);border:1.5px solid var(--bordure);border-radius:8px;padding:.82rem 1rem;color:var(--dark-text);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;transition:border-color .25s;}
+    .cmd-form-group input:focus,.cmd-form-group select:focus,.cmd-form-group textarea:focus{border-color:var(--rouge);background:#fff;}
+    .cmd-form-group textarea{resize:vertical;min-height:80px;}
+    .cmd-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:480px){.cmd-row{grid-template-columns:1fr;}}
+    .cmd-note{background:var(--or-pale);border:1px solid rgba(160,120,32,.2);border-radius:8px;padding:.9rem 1rem;font-size:.8rem;color:var(--mid-text);margin-bottom:1.3rem;display:flex;align-items:flex-start;gap:.7rem;line-height:1.6;}
+    .cmd-note i{color:var(--or);flex-shrink:0;margin-top:2px;}
+    .btn-cmd-submit{width:100%;background:linear-gradient(135deg,var(--rouge),var(--rouge-light));color:#fff;padding:1rem;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.6rem;box-shadow:0 4px 16px rgba(184,50,50,.3);}
+    .btn-cmd-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,50,50,.4);}
+    .btn-cmd-louer{background:linear-gradient(135deg,var(--or),var(--or-light));box-shadow:0 4px 16px rgba(160,120,32,.3);}
+    .btn-cmd-louer:hover{box-shadow:0 8px 24px rgba(160,120,32,.4);}
+
+    /* Confirmation */
+    .cmd-success{text-align:center;padding:2rem 1.5rem;}
+    .cmd-success-ico{width:70px;height:70px;background:linear-gradient(135deg,#2E7D52,#4CAF50);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;margin:0 auto 1.3rem;animation:bounceIn .5s ease;}
+    @keyframes bounceIn{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+    .cmd-success h4{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:.5rem;color:var(--dark-text);}
+    .cmd-success p{font-size:.88rem;color:var(--mid-text);line-height:1.7;max-width:360px;margin:0 auto;}
+    .cmd-ref{display:inline-block;background:var(--rouge-pale);color:var(--rouge);font-weight:700;font-size:.85rem;padding:.4rem 1.1rem;border-radius:50px;margin-top:.9rem;}
+
+    /* TOAST */
+    .toast-c{position:fixed;bottom:2rem;right:2rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;}
+    .toast{background:#1A1A1A;color:#fff;padding:.8rem 1.2rem;border-radius:10px;font-size:.85rem;display:flex;align-items:center;gap:.7rem;min-width:240px;box-shadow:0 6px 24px rgba(0,0,0,.2);animation:toastIn .3s ease;border-left:3px solid #4CAF50;}
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+    /* PILL FILTERS */
+    .pill-filter{padding:.4rem 1rem;border-radius:50px;font-size:.78rem;font-weight:600;cursor:pointer;border:1.5px solid var(--bordure);background:#fff;color:var(--mid-text);transition:all .2s;}
+    .pill-filter.active,.pill-filter:hover{background:var(--rouge);color:#fff;border-color:var(--rouge);}
+
+    /* ANIMATIONS */
+    @keyframes fadeInDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+    @keyframes fadeInRight{from{opacity:0;transform:translateX(35px)}to{opacity:1;transform:none}}
+    @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @keyframes pulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.55);opacity:0}}
+    .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
+    .reveal.visible{opacity:1;transform:none;}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo-nav">
+    <div class="logo-text"><span class="b">Bouoh</span><span class="r">SERVICES</span></div>
+    <span class="logo-script" id="navSlogan">Votre satisfaction, notre priorité !</span>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero">Accueil</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#biens">Immobilier</a></li>
+    <li><a href="#vehicules">Véhicules</a></li>
+    <li><a href="#partenaires">Partenaires</a></li>
+    <li><a href="#localisation">Localisation</a></li>
+    <li><a href="#contact" class="nav-cta">Nous Contacter</a></li>
+  </ul>
+  <div class="menu-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><i class="fas fa-bars"></i></div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-deco c1"></div><div class="hero-deco c2"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><i class="fas fa-map-marker-alt"></i> <span id="heroVille">Katiola, Côte d'Ivoire</span></div>
+      <h1 class="hero-title">Votre Partenaire<br/><span class="rouge">Immobilier</span> &amp;<br/>Assurance</h1>
+      <p class="hero-tagline" id="heroSlogan">Votre satisfaction, notre priorité !</p>
+      <p class="hero-desc">Spécialiste en assurance auto & moto, location et vente de voitures, construction, vente de maisons et terrains à <span id="heroVille2">Katiola</span>.</p>
+      <div class="hero-btns">
+        <a href="#biens" class="btn-rouge"><i class="fas fa-building"></i> Voir nos Biens</a>
+        <a href="#contact" class="btn-outline"><i class="fas fa-phone-alt"></i> Nous Contacter</a>
+      </div>
+      <div class="hero-phones">
+        <a href="#" class="hero-phone" id="heroTel1Link"><i class="fas fa-phone-alt"></i><span id="heroTel1">07 68 689 072</span></a>
+        <a href="#" class="hero-phone" id="heroTel2Link"><i class="fas fa-phone-alt"></i><span id="heroTel2">01 73 91 92 25</span></a>
+      </div>
+    </div>
+    <div>
+      <div style="position:relative;">
+        <div class="hero-visual"><i class="fas fa-city" style="color:rgba(184,50,50,.25);"></i></div>
+        <div class="trust-badge"><i class="fas fa-shield-alt"></i>CERTIFIÉ<br/>KATIOLA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item"><i class="fas fa-building"></i><div><div class="stat-num" id="statBiens">0</div><div class="stat-lbl">Biens Disponibles</div></div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><i class="fas fa-car"></i><div><div class="stat-num" id="statVehicules">0</div><div class="stat-lbl">Véhicules</div></div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><i class="fas fa-handshake"></i><div><div class="stat-num">100%</div><div class="stat-lbl">Satisfaction Client</div></div></div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><i class="fas fa-map-marker-alt"></i><div><div class="stat-num">1</div><div class="stat-lbl">Agence à Katiola</div></div></div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="sw alt" id="services">
+  <div class="si">
+    <div class="reveal">
+      <div class="s-tag">Ce que nous proposons</div>
+      <h2 class="s-title">Nos Services Premium</h2>
+      <div class="s-div"></div>
+      <p class="s-sub">Une gamme complète de services pour vous accompagner dans tous vos projets en Côte d'Ivoire.</p>
+    </div>
+    <div class="srv-grid">
+      <div class="srv-card reveal"><div class="srv-ico"><i class="fas fa-car-crash"></i></div><h3 class="srv-t">Assurance Auto &amp; Moto</h3><p class="srv-d">Protégez votre véhicule avec nos formules adaptées à tous les budgets. Partenaire LEADWAY Assurance.</p><a href="https://ci.leadway.com/" class="srv-lnk" target="_blank">Souscrire <i class="fas fa-arrow-right"></i></a></div>
+      <div class="srv-card reveal"><div class="srv-ico"><i class="fas fa-car"></i></div><h3 class="srv-t">Location &amp; Vente de Voitures</h3><p class="srv-d">Flotte de véhicules modernes à la location courte ou longue durée. Achat et vente en toute sécurité.</p><a href="#vehicules" class="srv-lnk">Voir les véhicules <i class="fas fa-arrow-right"></i></a></div>
+      <div class="srv-card reveal"><div class="srv-ico"><i class="fas fa-hard-hat"></i></div><h3 class="srv-t">Construction &amp; Rénovation</h3><p class="srv-d">Réalisation de vos projets de construction et rénovation avec des artisans qualifiés.</p><a href="#contact" class="srv-lnk">Obtenir un devis <i class="fas fa-arrow-right"></i></a></div>
+      <div class="srv-card reveal"><div class="srv-ico"><i class="fas fa-home"></i></div><h3 class="srv-t">Vente de Maisons</h3><p class="srv-d">Trouvez la maison de vos rêves dans notre portefeuille. Accompagnement personnalisé de A à Z.</p><a href="#biens" class="srv-lnk">Consulter les biens <i class="fas fa-arrow-right"></i></a></div>
+      <div class="srv-card reveal"><div class="srv-ico"><i class="fas fa-map-marked-alt"></i></div><h3 class="srv-t">Vente de Terrains</h3><p class="srv-d">Investissez dans l'immobilier foncier avec des terrains bien situés, documentés et sécurisés.</p><a href="#biens" class="srv-lnk">Explorer les terrains <i class="fas fa-arrow-right"></i></a></div>
+      <div class="srv-card reveal"><div class="srv-ico"><i class="fas fa-building"></i></div><h3 class="srv-t">Gestion Immobilière</h3><p class="srv-d">Confiez vos biens à nos experts : location, entretien, recouvrement des loyers et suivi administratif.</p><a href="#contact" class="srv-lnk">En savoir plus <i class="fas fa-arrow-right"></i></a></div>
+    </div>
+  </div>
+</div>
+
+<!-- BIENS -->
+<div class="sw" id="biens">
+  <div class="si">
+    <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="s-tag">Notre Portefeuille</div>
+        <h2 class="s-title">Biens Immobiliers</h2>
+        <div class="s-div"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;" id="bienFilters">
+        <span class="pill-filter active" onclick="filterBiens('tous',this)">Tous</span>
+        <span class="pill-filter" onclick="filterBiens('maison',this)">Maisons</span>
+        <span class="pill-filter" onclick="filterBiens('terrain',this)">Terrains</span>
+        <span class="pill-filter" onclick="filterBiens('appartement',this)">Appartements</span>
+      </div>
+    </div>
+    <div class="bien-grid" id="biensGrid"></div>
+  </div>
+</div>
+
+<!-- VÉHICULES -->
+<div class="sw alt" id="vehicules">
+  <div class="si">
+    <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="s-tag">Notre Parc</div>
+        <h2 class="s-title">Véhicules</h2>
+        <div class="s-div"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;" id="vehiculeFilters">
+        <span class="pill-filter active" onclick="filterVehicules('tous',this)">Tous</span>
+        <span class="pill-filter" onclick="filterVehicules('vente',this)">À Vendre</span>
+        <span class="pill-filter" onclick="filterVehicules('location',this)">À Louer</span>
+      </div>
+    </div>
+    <div class="bien-grid" id="vehiculesGrid"></div>
+  </div>
+</div>
+
+<!-- VALEURS -->
+<div class="sw alt2">
+  <div class="si">
+    <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto;">
+      <div class="s-tag">Nos engagements</div>
+      <h2 class="s-title">Pourquoi Nous Choisir ?</h2>
+      <div class="s-div" style="margin:.9rem auto 1.3rem;"></div>
+    </div>
+    <div class="val-grid">
+      <div class="val-card reveal"><div class="val-ico"><i class="fas fa-bolt"></i></div><div class="val-t">Rapidité</div><div class="val-d">Des démarches rapides et efficaces pour vous faire gagner du temps précieux.</div></div>
+      <div class="val-card reveal"><div class="val-ico"><i class="fas fa-shield-alt"></i></div><div class="val-t">Fiabilité</div><div class="val-d">Un service fiable et des partenaires de confiance pour sécuriser vos projets.</div></div>
+      <div class="val-card reveal"><div class="val-ico"><i class="fas fa-user-tie"></i></div><div class="val-t">Accompagnement</div><div class="val-d">Nos conseillers s'adaptent à chaque situation pour vous offrir les meilleures solutions.</div></div>
+      <div class="val-card reveal"><div class="val-ico"><i class="fas fa-lightbulb"></i></div><div class="val-t">Expertise Locale</div><div class="val-d">Notre connaissance du marché local nous permet de vous proposer les solutions les plus adaptées.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTENAIRES -->
+<div class="sw" id="partenaires">
+  <div class="si" style="text-align:center;">
+    <div class="reveal">
+      <div class="s-tag">Ils nous font confiance</div>
+      <h2 class="s-title">Nos Partenaires Officiels</h2>
+      <div class="s-div" style="margin:.9rem auto;"></div>
+    </div>
+    <div class="part-grid reveal">
+      <a href="https://pay.tresor.gouv.ci/r/" target="_blank" class="part-badge p-tp">Trésor<span style="color:var(--dark-text);">Pay®</span></a>
+      <a href="https://www.westernunion.com/fr/fr/home.html" target="_blank" class="part-badge p-wu">WESTERN UNION</a>
+      <a href="https://ci.leadway.com/" target="_blank" class="part-badge p-lw">LEADWAY Assurance</a>
+      <a href="https://www.riamoneytransfer.com/fr-fr/" target="_blank" class="part-badge p-ria">RIA</a>
+    </div>
+  </div>
+</div>
+
+<!-- LOCALISATION -->
+<div class="sw alt" id="localisation">
+  <div class="si">
+    <div class="reveal">
+      <div class="s-tag">Où nous trouver</div>
+      <h2 class="s-title">Notre Localisation</h2>
+      <div class="s-div"></div>
+    </div>
+    <div class="loc-wrap reveal">
+      <div>
+        <h3 class="loc-title" id="locVille">KATIOLA</h3>
+        <p id="locQuartier" style="margin-bottom:1.4rem;font-size:.95rem;opacity:.9;">Feu de la Mosquée, en face du Siège PDCI-RDA</p>
+        <div class="loc-addr">
+          <i class="fas fa-map-marker-alt" style="flex-shrink:0;margin-top:3px;"></i>
+          <p id="locAdresse">Katiola, feu de la mosquée<br/>En face du siège PDCI-RDA, Côte d'Ivoire</p>
+        </div>
+        <div class="loc-phones">
+          <a href="#" class="loc-ph" id="locTel1"><div class="ph-ic"><i class="fas fa-phone-alt"></i></div><span id="locTel1Val">07 68 689 072</span></a>
+          <a href="#" class="loc-ph" id="locTel2"><div class="ph-ic"><i class="fas fa-phone-alt"></i></div><span id="locTel2Val">01 73 91 92 25</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="loc-card">
+          <i class="fas fa-map-marker-alt" style="font-size:3rem;margin-bottom:.9rem;display:block;opacity:.9;"></i>
+          <h4 id="locNom" style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem;">BouohServices</h4>
+          <p id="locInfo" style="font-size:.87rem;opacity:.85;line-height:1.6;margin-bottom:1.1rem;">Katiola, Côte d'Ivoire<br/>Feu de la Mosquée<br/>Face au siège PDCI-RDA</p>
+          <div class="katiola-pin">📍 KATIOLA, CI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="sw" id="contact">
+  <div class="si">
+    <div class="reveal">
+      <div class="s-tag">Écrivez-nous</div>
+      <h2 class="s-title">Contactez-Nous</h2>
+      <div class="s-div"></div>
+      <p class="s-sub">Notre équipe est à votre écoute pour répondre à toutes vos questions.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="ci-item"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Adresse</div><div class="ci-val" id="cAdresse">Katiola, feu de la mosquée<br/>Face siège PDCI-RDA, Côte d'Ivoire</div></div></div>
+        <div class="ci-item"><div class="ci-ico"><i class="fas fa-phone-alt"></i></div><div><div class="ci-lbl">Téléphone</div><div class="ci-val"><a href="#" id="cTel1Link"><span id="cTel1">07 68 689 072</span></a><br/><a href="#" id="cTel2Link"><span id="cTel2">01 73 91 92 25</span></a></div></div></div>
+        <div class="ci-item"><div class="ci-ico" style="background:#E8F8EF;color:#25D366;"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp</div><div class="ci-val"><a href="#" id="cWaLink"><span id="cWa">07 68 689 072</span></a></div></div></div>
+        <div class="ci-item"><div class="ci-ico"><i class="fas fa-clock"></i></div><div><div class="ci-lbl">Horaires</div><div class="ci-val" id="cHoraires">Lun – Sam : 8h00 – 18h00<br/>Dim : Sur rendez-vous</div></div></div>
+      </div>
+      <div class="contact-form reveal">
+        <h3 class="form-title">Envoyer un Message</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Prénom</label><input type="text" id="cfPrenom" placeholder="Votre prénom"/></div>
+          <div class="form-group"><label>Nom</label><input type="text" id="cfNom" placeholder="Votre nom"/></div>
+        </div>
+        <div class="form-group"><label>Téléphone</label><input type="tel" id="cfTel" placeholder="+225 XX XX XX XX XX"/></div>
+        <div class="form-group">
+          <label>Service souhaité</label>
+          <select id="cfService">
+            <option value="">Sélectionner...</option>
+            <option>Assurance Auto / Moto</option><option>Location de Voiture</option>
+            <option>Vente de Voiture</option><option>Construction / Rénovation</option>
+            <option>Vente de Maison</option><option>Vente de Terrain</option><option>Gestion Immobilière</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea id="cfMessage" placeholder="Décrivez votre besoin..."></textarea></div>
+        <button class="btn-submit" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Envoyer le Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="foot-logo"><span class="b">Bouoh</span><span class="r">Services</span></span>
+      <span class="foot-script" id="footSlogan">Votre satisfaction, notre priorité !</span>
+      <p class="foot-about">Votre partenaire de confiance en assurance, immobilier et location de véhicules à Katiola, Côte d'Ivoire.</p>
+      <div class="foot-socials">
+        <a href="#" id="footFb" class="soc-ico"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" id="footWa" class="soc-ico"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" id="footIg" class="soc-ico"><i class="fab fa-instagram"></i></a>
+        <a href="#" id="footTt" class="soc-ico"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="foot-col"><h5>Services</h5><ul><li><a href="#services">Assurance Auto</a></li><li><a href="#services">Assurance Moto</a></li><li><a href="#vehicules">Location Voiture</a></li><li><a href="#vehicules">Vente Voiture</a></li></ul></div>
+    <div class="foot-col"><h5>Immobilier</h5><ul><li><a href="#biens">Vente Maison</a></li><li><a href="#biens">Vente Terrain</a></li><li><a href="#services">Construction</a></li><li><a href="#services">Rénovation</a></li></ul></div>
+    <div class="foot-col"><h5>Contact</h5><ul>
+      <li><a href="#" id="footTel1">07 68 689 072</a></li>
+      <li><a href="#" id="footTel2">01 73 91 92 25</a></li>
+      <li><a href="#localisation">Katiola, feu mosquée</a></li>
+      <li><a href="#localisation">Face PDCI-RDA</a></li>
+    </ul></div>
+  </div>
+  <div class="foot-bottom"><p id="footCopy">© 2026 BouohServices — Tous droits réservés | Katiola, Côte d'Ivoire</p></div>
+</footer>
+
+<a href="#" class="wa-btn" id="waBtn" target="_blank">
+  <div class="wa-pulse"></div><i class="fab fa-whatsapp"></i>
+</a>
+<a href="admin.html" class="admin-link" title="Administration"><i class="fas fa-cog"></i></a>
+
+<!-- MODAL DÉTAIL -->
+<div class="modal-overlay" id="modalDetail">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3 id="modalTitle">Détail</h3>
+      <button class="modal-close" onclick="closeModal('modalDetail')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-bd" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- MODAL COMMANDE -->
+<div class="modal-overlay" id="modalCommande">
+  <div class="modal-box cmd-box">
+    <div class="cmd-header" id="cmdHeader">
+      <button class="modal-close" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.2);color:#fff;" onclick="closeModal('modalCommande')"><i class="fas fa-times"></i></button>
+      <div class="cmd-header-icon" id="cmdHeaderIcon"><i class="fas fa-shopping-cart"></i></div>
+      <h3 id="cmdTitle">Commander ce bien</h3>
+      <p id="cmdSubtitle">Remplissez le formulaire, nous vous confirmons rapidement.</p>
+      <div class="cmd-bien-recap" id="cmdRecap">
+        <div class="recap-ico" id="cmdRecapIco"><i class="fas fa-building"></i></div>
+        <div>
+          <div class="recap-name" id="cmdRecapName">—</div>
+          <div class="recap-prix" id="cmdRecapPrix">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="cmd-body" id="cmdFormWrapper">
+      <div class="cmd-note"><i class="fas fa-info-circle"></i><span>Votre commande sera examinée par notre équipe qui vous contactera dans les plus brefs délais pour finaliser la transaction.</span></div>
+      <div class="cmd-row">
+        <div class="cmd-form-group"><label>Prénom *</label><input type="text" id="cmdPrenom" placeholder="Votre prénom"/></div>
+        <div class="cmd-form-group"><label>Nom *</label><input type="text" id="cmdNom" placeholder="Votre nom"/></div>
+      </div>
+      <div class="cmd-form-group"><label>Téléphone *</label><input type="tel" id="cmdTel" placeholder="+225 XX XX XX XX XX"/></div>
+      <div class="cmd-form-group"><label>Ville / Quartier</label><input type="text" id="cmdVille" placeholder="Votre localisation actuelle"/></div>
+      <div id="cmdLocationFields"><!-- rempli dynamiquement pour location --></div>
+      <div class="cmd-form-group"><label>Message / Précisions</label><textarea id="cmdMessage" placeholder="Questions, disponibilités souhaitées, conditions particulières..."></textarea></div>
+      <button class="btn-cmd-submit" id="cmdSubmitBtn" onclick="submitCommande()"><i class="fas fa-check-circle"></i> <span id="cmdSubmitTxt">Confirmer ma Commande</span></button>
+    </div>
+    <!-- Ecran succès (caché par défaut) -->
+    <div class="cmd-body" id="cmdSuccess" style="display:none;">
+      <div class="cmd-success">
+        <div class="cmd-success-ico"><i class="fas fa-check"></i></div>
+        <h4>Commande Envoyée !</h4>
+        <p>Votre demande a bien été enregistrée. Notre équipe BouohServices va vous contacter très prochainement pour confirmer et finaliser.</p>
+        <span class="cmd-ref" id="cmdRefNum">#BS-CMD-0000</span>
+        <div style="margin-top:1.5rem;display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;">
+          <a href="#" id="cmdWaConfirm" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;background:#25D366;color:#fff;padding:.75rem 1.4rem;border-radius:8px;font-weight:700;font-size:.87rem;text-decoration:none;transition:all .3s;"><i class="fab fa-whatsapp"></i> Confirmer sur WhatsApp</a>
+          <button onclick="closeModal('modalCommande')" style="display:inline-flex;align-items:center;gap:.5rem;background:var(--bg2);color:var(--mid-text);padding:.75rem 1.4rem;border-radius:8px;font-weight:600;font-size:.87rem;border:1px solid var(--bordure);cursor:pointer;">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script>
+let pubData = BouohData.load();
+let currentBienFilter = 'tous';
+let currentVehiculeFilter = 'tous';
+let cmdContext = null; // { type:'bien'|'vehicule', item, mode:'commander'|'louer' }
+
+// ─── SYNC ADMIN ────────────────────────────────────────────────
+window.addEventListener('storage', e => { if (e.key === 'bouohservices_data') renderAll(); });
+
+// ─── PARAMÈTRES SITE ───────────────────────────────────────────
+function applyParams(p) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const setHref = (id, href) => { const el = document.getElementById(id); if (el) el.href = href; };
+  set('navSlogan', p.slogan); set('heroSlogan', p.slogan); set('heroVille', p.ville); set('heroVille2', p.nom);
+  set('heroTel1', p.tel1); set('heroTel2', p.tel2);
+  setHref('heroTel1Link', 'tel:' + p.tel1.replace(/\s/g,''));
+  setHref('heroTel2Link', 'tel:' + p.tel2.replace(/\s/g,''));
+  set('locVille', p.nom.toUpperCase()); set('locQuartier', p.quartier);
+  document.getElementById('locAdresse').innerHTML = p.adresse + '<br/>' + p.quartier;
+  set('locTel1Val', p.tel1); set('locTel2Val', p.tel2);
+  setHref('locTel1', 'tel:' + p.tel1.replace(/\s/g,''));
+  setHref('locTel2', 'tel:' + p.tel2.replace(/\s/g,''));
+  set('locNom', p.nom);
+  document.getElementById('locInfo').innerHTML = p.ville + '<br/>' + p.adresse + '<br/>' + p.quartier;
+  document.getElementById('cAdresse').innerHTML = p.adresse + '<br/>' + p.quartier + ', ' + p.ville;
+  set('cTel1', p.tel1); set('cTel2', p.tel2);
+  setHref('cTel1Link', 'tel:' + p.tel1.replace(/\s/g,'')); setHref('cTel2Link', 'tel:' + p.tel2.replace(/\s/g,''));
+  set('cWa', p.tel1); setHref('cWaLink', 'https://wa.me/' + p.whatsapp);
+  document.getElementById('cHoraires').innerHTML = p.horaires.replace('|','<br/>');
+  set('footSlogan', p.slogan);
+  setHref('footFb', p.facebook || '#'); setHref('footIg', p.instagram || '#');
+  setHref('footTt', p.tiktok || '#'); setHref('footWa', 'https://wa.me/' + p.whatsapp);
+  set('footTel1', p.tel1); set('footTel2', p.tel2);
+  setHref('footTel1', 'tel:' + p.tel1.replace(/\s/g,'')); setHref('footTel2', 'tel:' + p.tel2.replace(/\s/g,''));
+  setHref('waBtn', 'https://wa.me/' + p.whatsapp);
+  set('footCopy', '© 2026 ' + p.nom + ' — Tous droits réservés | ' + p.ville + ' | Proximité · Confiance · Qualité');
+}
+
+// ─── RENDU BIENS ───────────────────────────────────────────────
+function renderBiens(list) {
+  const g = document.getElementById('biensGrid');
+  document.getElementById('statBiens').textContent = pubData.biens.filter(b => b.statut === 'actif').length;
+  if (!list.length) { g.innerHTML = '<div class="empty-state"><i class="fas fa-building"></i>Aucun bien disponible pour le moment.<br/>Revenez bientôt !</div>'; return; }
+  g.innerHTML = list.map(b => {
+    const img = b.images && b.images[0] ? `<img src="${b.images[0]}" alt="${b.titre}"/>` : `<i class="fas fa-building" style="color:rgba(184,50,50,.2);"></i>`;
+    const prix = b.prix ? new Intl.NumberFormat('fr-FR').format(b.prix) + ' FCFA' : 'Prix sur demande';
+    const suffix = b.statut === 'loue' ? '/mois' : '';
+    const bc = b.statut === 'loue' ? 'badge-loue' : b.statut === 'vendu' ? 'badge-vendu' : 'badge-actif';
+    const bt = b.statut === 'loue' ? 'En Location' : b.statut === 'vendu' ? 'Vendu' : 'Disponible';
+    const metas = [b.superficie ? b.superficie + ' m²' : '', b.pieces ? b.pieces + ' pièces' : ''].filter(Boolean).join(' · ');
+
+    let actionBtn = '';
+    if (b.statut === 'vendu') {
+      actionBtn = `<div class="btn-vendu-dis"><i class="fas fa-ban"></i> Non disponible</div>`;
+    } else if (b.statut === 'loue') {
+      actionBtn = `<button class="btn-commander btn-louer" onclick="openCommande('bien',${b.id},'louer')"><i class="fas fa-key"></i> Louer</button>`;
+    } else {
+      actionBtn = `<button class="btn-commander" onclick="openCommande('bien',${b.id},'commander')"><i class="fas fa-shopping-cart"></i> Commander</button>`;
+    }
+
+    return `<div class="bien-card">
+      <div class="bien-img">${img}<span class="bien-badge ${bc}">${bt}</span></div>
+      <div class="bien-body">
+        <div class="bien-type-tag">${b.type}</div>
+        <div class="bien-name">${b.titre}</div>
+        <div class="bien-loc"><i class="fas fa-map-marker-alt"></i> ${b.loc}</div>
+        ${metas ? `<div class="bien-meta">${metas}</div>` : ''}
+        <div class="bien-price">${prix}${suffix}</div>
+        <div class="bien-actions">
+          <button class="btn-detail" onclick="showDetail('bien',${b.id})"><i class="fas fa-eye"></i> Détails</button>
+          ${actionBtn}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDU VÉHICULES ───────────────────────────────────────────
+function renderVehicules(list) {
+  const g = document.getElementById('vehiculesGrid');
+  document.getElementById('statVehicules').textContent = pubData.vehicules.filter(v => v.statut === 'actif').length;
+  if (!list.length) { g.innerHTML = '<div class="empty-state"><i class="fas fa-car"></i>Aucun véhicule disponible pour le moment.</div>'; return; }
+  g.innerHTML = list.map(v => {
+    const img = v.images && v.images[0] ? `<img src="${v.images[0]}" alt="${v.marque}"/>` : `<i class="fas fa-car" style="color:rgba(184,50,50,.2);"></i>`;
+    const offreTxt = v.offre === 'vente' ? 'À Vendre' : v.offre === 'location' ? 'À Louer' : 'Vente & Location';
+    const prix = v.prixVente ? new Intl.NumberFormat('fr-FR').format(v.prixVente) + ' FCFA' : v.prixLocation ? new Intl.NumberFormat('fr-FR').format(v.prixLocation) + ' FCFA/jour' : 'Prix sur demande';
+    const bc = v.statut === 'loue' ? 'badge-loue' : v.statut === 'vendu' ? 'badge-vendu' : 'badge-actif';
+    const bt = v.statut === 'loue' ? 'En Location' : v.statut === 'vendu' ? 'Vendu' : offreTxt;
+
+    let actionBtn = '';
+    if (v.statut === 'vendu') {
+      actionBtn = `<div class="btn-vendu-dis"><i class="fas fa-ban"></i> Non disponible</div>`;
+    } else if (v.offre === 'location' || v.statut === 'loue') {
+      actionBtn = `<button class="btn-commander btn-louer" onclick="openCommande('vehicule',${v.id},'louer')"><i class="fas fa-key"></i> Louer</button>`;
+    } else if (v.offre === 'les deux') {
+      actionBtn = `<button class="btn-commander" onclick="openCommande('vehicule',${v.id},'commander')"><i class="fas fa-shopping-cart"></i> Acheter</button>`;
+    } else {
+      actionBtn = `<button class="btn-commander" onclick="openCommande('vehicule',${v.id},'commander')"><i class="fas fa-shopping-cart"></i> Commander</button>`;
+    }
+
+    return `<div class="bien-card">
+      <div class="bien-img">${img}<span class="bien-badge ${bc}">${bt}</span></div>
+      <div class="bien-body">
+        <div class="bien-type-tag">${v.carburant || ''} · ${v.annee}</div>
+        <div class="bien-name">${v.marque} ${v.modele}</div>
+        <div class="bien-loc"><i class="fas fa-palette"></i> ${v.couleur || '—'}</div>
+        ${v.km ? `<div class="bien-meta"><i class="fas fa-tachometer-alt"></i> ${new Intl.NumberFormat('fr-FR').format(v.km)} km</div>` : ''}
+        <div class="bien-price">${prix}</div>
+        <div class="bien-actions">
+          <button class="btn-detail" onclick="showDetail('vehicule',${v.id})"><i class="fas fa-eye"></i> Détails</button>
+          ${actionBtn}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTRES ────────────────────────────────────────────────────
+function filterBiens(type, el) {
+  document.querySelectorAll('#bienFilters .pill-filter').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  currentBienFilter = type;
+  const list = type === 'tous' ? pubData.biens : pubData.biens.filter(b => b.type === type);
+  renderBiens(list);
+}
+function filterVehicules(type, el) {
+  document.querySelectorAll('#vehiculeFilters .pill-filter').forEach(p => p.classList.remove('active'));
+  if (el) el.classList.add('active');
+  currentVehiculeFilter = type;
+  const list = type === 'tous' ? pubData.vehicules : pubData.vehicules.filter(v => v.offre.includes(type));
+  renderVehicules(list);
+}
+
+// ─── MODAL DÉTAIL ───────────────────────────────────────────────
+function showDetail(type, id) {
+  const item = type === 'bien' ? pubData.biens.find(b => b.id === id) : pubData.vehicules.find(v => v.id === id);
+  if (!item) return;
+  document.getElementById('modalTitle').textContent = type === 'bien' ? item.titre : item.marque + ' ' + item.modele;
+  let html = '';
+  if (item.images && item.images.length) html += `<div class="modal-imgs">${item.images.map(s => `<img src="${s}" alt=""/>`).join('')}</div>`;
+  html += '<div class="modal-info-grid">';
+  if (type === 'bien') {
+    const prix = item.prix ? new Intl.NumberFormat('fr-FR').format(item.prix) + ' FCFA' : 'Sur demande';
+    html += ib('Type', item.type) + ib('Prix', prix) + ib('Localisation', item.loc) + ib('Statut', item.statut === 'actif' ? 'Disponible' : item.statut === 'loue' ? 'En Location' : 'Vendu');
+    if (item.superficie) html += ib('Superficie', item.superficie + ' m²');
+    if (item.pieces) html += ib('Pièces', item.pieces);
+    html += ib('Référence', item.ref);
+  } else {
+    const pv = item.prixVente ? new Intl.NumberFormat('fr-FR').format(item.prixVente) + ' FCFA' : '—';
+    const pl = item.prixLocation ? new Intl.NumberFormat('fr-FR').format(item.prixLocation) + ' FCFA/jour' : '—';
+    html += ib('Marque', item.marque) + ib('Modèle', item.modele) + ib('Année', item.annee) + ib('Carburant', item.carburant || '—');
+    if (item.couleur) html += ib('Couleur', item.couleur);
+    if (item.km) html += ib('Kilométrage', new Intl.NumberFormat('fr-FR').format(item.km) + ' km');
+    html += ib('Prix vente', pv) + ib('Prix location', pl);
+  }
+  html += '</div>';
+  if (item.desc) html += `<div class="modal-desc">${item.desc}</div>`;
+
+  // CTA row
+  const waMsg = encodeURIComponent('Bonjour BouohServices, je suis intéressé(e) par : ' + (type === 'bien' ? item.titre : item.marque + ' ' + item.modele));
+  const waLink = 'https://wa.me/' + pubData.parametres.whatsapp + '?text=' + waMsg;
+  const isSold = item.statut === 'vendu';
+  const isLoue = item.statut === 'loue' || (type === 'vehicule' && item.offre === 'location');
+  let cmdBtn = '';
+  if (!isSold) {
+    if (isLoue) {
+      cmdBtn = `<button class="btn-cmd-submit btn-cmd-louer" style="flex:1;padding:.8rem 1rem;border-radius:8px;" onclick="closeModal('modalDetail');openCommande('${type}',${item.id},'louer')"><i class="fas fa-key"></i> Louer ce bien</button>`;
+    } else {
+      cmdBtn = `<button class="btn-cmd-submit" style="flex:1;padding:.8rem 1rem;border-radius:8px;" onclick="closeModal('modalDetail');openCommande('${type}',${item.id},'commander')"><i class="fas fa-shopping-cart"></i> Commander</button>`;
+    }
+  }
+  html += `<div class="modal-cta-row"><a href="${waLink}" target="_blank" class="cta-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>${cmdBtn}</div>`;
+  document.getElementById('modalBody').innerHTML = html;
+  openModal('modalDetail');
+}
+function ib(l, v) { return `<div class="info-box"><div class="lbl">${l}</div><div class="val">${v}</div></div>`; }
+
+// ─── MODAL COMMANDE ─────────────────────────────────────────────
+function openCommande(type, id, mode) {
+  const item = type === 'bien' ? pubData.biens.find(b => b.id === id) : pubData.vehicules.find(v => v.id === id);
+  if (!item) return;
+  cmdContext = { type, item, mode };
+
+  const isLouer = mode === 'louer';
+  const name = type === 'bien' ? item.titre : item.marque + ' ' + item.modele;
+  const prix = type === 'bien'
+    ? (item.prix ? new Intl.NumberFormat('fr-FR').format(item.prix) + ' FCFA' + (isLouer ? '/mois' : '') : 'Prix sur demande')
+    : (isLouer ? (item.prixLocation ? new Intl.NumberFormat('fr-FR').format(item.prixLocation) + ' FCFA/jour' : '—') : (item.prixVente ? new Intl.NumberFormat('fr-FR').format(item.prixVente) + ' FCFA' : '—'));
+  const ico = type === 'bien' ? 'fa-building' : 'fa-car';
+
+  // Mise à jour header
+  document.getElementById('cmdHeaderIcon').innerHTML = isLouer ? '<i class="fas fa-key"></i>' : '<i class="fas fa-shopping-cart"></i>';
+  document.getElementById('cmdTitle').textContent = isLouer ? 'Louer ce bien' : 'Commander ce bien';
+  document.getElementById('cmdSubtitle').textContent = 'Remplissez le formulaire, notre équipe vous contacte rapidement.';
+  document.getElementById('cmdRecapIco').innerHTML = `<i class="fas ${ico}"></i>`;
+  document.getElementById('cmdRecapName').textContent = name;
+  document.getElementById('cmdRecapPrix').textContent = prix;
+
+  // Champs spéciaux pour location véhicule
+  const extra = document.getElementById('cmdLocationFields');
+  if (isLouer && type === 'vehicule') {
+    extra.innerHTML = `
+      <div class="cmd-row">
+        <div class="cmd-form-group"><label>Date de début *</label><input type="date" id="cmdDateDebut"/></div>
+        <div class="cmd-form-group"><label>Date de fin *</label><input type="date" id="cmdDateFin"/></div>
+      </div>`;
+  } else if (isLouer && type === 'bien') {
+    extra.innerHTML = `<div class="cmd-form-group"><label>Date d'entrée souhaitée</label><input type="date" id="cmdDateDebut"/></div>`;
+  } else {
+    extra.innerHTML = '';
+  }
+
+  document.getElementById('cmdSubmitBtn').className = 'btn-cmd-submit' + (isLouer ? ' btn-cmd-louer' : '');
+  document.getElementById('cmdSubmitTxt').textContent = isLouer ? 'Confirmer ma Location' : 'Confirmer ma Commande';
+
+  // Reset form & hide success
+  ['cmdPrenom','cmdNom','cmdTel','cmdVille','cmdMessage'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('cmdFormWrapper').style.display = 'block';
+  document.getElementById('cmdSuccess').style.display = 'none';
+
+  openModal('modalCommande');
+}
+
+function submitCommande() {
+  if (!cmdContext) return;
+  const prenom = document.getElementById('cmdPrenom').value.trim();
+  const nom = document.getElementById('cmdNom').value.trim();
+  const tel = document.getElementById('cmdTel').value.trim();
+  if (!prenom || !nom || !tel) { showToast('Veuillez remplir votre prénom, nom et téléphone.', 'warning'); return; }
+
+  const { type, item, mode } = cmdContext;
+  const name = type === 'bien' ? item.titre : item.marque + ' ' + item.modele;
+  const prix = type === 'bien'
+    ? (item.prix ? new Intl.NumberFormat('fr-FR').format(item.prix) + ' FCFA' : 'Sur demande')
+    : (item.prixVente ? new Intl.NumberFormat('fr-FR').format(item.prixVente) + ' FCFA' : item.prixLocation ? new Intl.NumberFormat('fr-FR').format(item.prixLocation) + ' FCFA/j' : 'Sur demande');
+
+  const extra = {};
+  const dd = document.getElementById('cmdDateDebut'); if (dd) extra.dateDebut = dd.value;
+  const df = document.getElementById('cmdDateFin'); if (df) extra.dateFin = df.value;
+
+  const ref = 'BS-CMD-' + Date.now().toString().slice(-6);
+  BouohData.addCommande({
+    ref,
+    prenom, nom, tel,
+    ville: document.getElementById('cmdVille').value,
+    message: document.getElementById('cmdMessage').value,
+    typeItem: type,
+    itemId: item.id,
+    itemNom: name,
+    itemPrix: prix,
+    mode, // commander | louer
+    ...extra
+  });
+
+  // Aussi ajouter comme visiteur
+  BouohData.addVisiteur({ prenom, nom, tel, service: mode === 'louer' ? 'Location : ' + name : 'Achat : ' + name, notes: document.getElementById('cmdMessage').value });
+
+  // Afficher succès
+  document.getElementById('cmdFormWrapper').style.display = 'none';
+  document.getElementById('cmdRefNum').textContent = '#' + ref;
+  const waMsg = encodeURIComponent(`Bonjour BouohServices ! J'ai passé une commande (réf: ${ref}) pour : ${name}. Mon nom : ${prenom} ${nom}, Tél : ${tel}`);
+  document.getElementById('cmdWaConfirm').href = 'https://wa.me/' + pubData.parametres.whatsapp + '?text=' + waMsg;
+  document.getElementById('cmdSuccess').style.display = 'block';
+}
+
+// ─── FORMULAIRE CONTACT ─────────────────────────────────────────
+function sendMessage() {
+  const prenom = document.getElementById('cfPrenom').value.trim();
+  const nom = document.getElementById('cfNom').value.trim();
+  const tel = document.getElementById('cfTel').value.trim();
+  if (!prenom || !nom || !tel) { showToast('Veuillez remplir au moins votre nom et téléphone.', 'warning'); return; }
+  BouohData.addMessage({ prenom, nom, tel, service: document.getElementById('cfService').value, message: document.getElementById('cfMessage').value });
+  BouohData.addVisiteur({ prenom, nom, tel, service: document.getElementById('cfService').value, notes: document.getElementById('cfMessage').value });
+  ['cfPrenom','cfNom','cfTel','cfMessage'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cfService').selectedIndex = 0;
+  showToast('Message envoyé ! Nous vous contacterons rapidement.', 'success');
+}
+
+// ─── MODALS ─────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); }));
+
+// ─── TOAST ──────────────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const c = document.getElementById('toastC');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.style.borderLeftColor = type === 'warning' ? 'var(--or)' : type === 'success' ? '#4CAF50' : 'var(--rouge)';
+  const ico = type === 'warning' ? 'exclamation-triangle' : 'check-circle';
+  t.innerHTML = `<i class="fas fa-${ico}" style="color:${type==='warning'?'var(--or)':'#4CAF50'}"></i> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .4s'; setTimeout(() => t.remove(), 400); }, 4200);
+}
+
+// ─── RENDER ALL ─────────────────────────────────────────────────
+function renderAll() {
+  pubData = BouohData.load();
+  applyParams(pubData.parametres);
+  const bList = currentBienFilter === 'tous' ? pubData.biens : pubData.biens.filter(b => b.type === currentBienFilter);
+  renderBiens(bList);
+  const vList = currentVehiculeFilter === 'tous' ? pubData.vehicules : pubData.vehicules.filter(v => v.offre.includes(currentVehiculeFilter));
+  renderVehicules(vList);
+}
+
+// ─── SCROLL REVEAL ──────────────────────────────────────────────
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 60); obs.unobserve(e.target); } });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').style.padding = window.scrollY > 60 ? '.65rem 5%' : '.9rem 5%';
+});
+
+// ─── INIT ───────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
